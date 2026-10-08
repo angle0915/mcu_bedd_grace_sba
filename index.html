@@ -4,2497 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRACE - Assessment Dashboard</title>
-    <!-- Tailwind CSS is embedded below for production-safe, single-file use. -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Chart.js for Dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-
-    <style id="tailwindcss-generated">
-/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
-@layer properties;
-@layer theme, base, components, utilities;
-@layer theme {
-  :root, :host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
-    --color-red-100: oklch(93.6% 0.032 17.717);
-    --color-red-200: oklch(88.5% 0.062 18.334);
-    --color-red-300: oklch(80.8% 0.114 19.571);
-    --color-red-400: oklch(70.4% 0.191 22.216);
-    --color-red-500: oklch(63.7% 0.237 25.331);
-    --color-red-700: oklch(50.5% 0.213 27.518);
-    --color-orange-50: oklch(98% 0.016 73.684);
-    --color-orange-100: oklch(95.4% 0.038 75.164);
-    --color-orange-200: oklch(90.1% 0.076 70.697);
-    --color-orange-600: oklch(64.6% 0.222 41.116);
-    --color-orange-700: oklch(55.3% 0.195 38.402);
-    --color-amber-50: oklch(98.7% 0.022 95.277);
-    --color-amber-100: oklch(96.2% 0.059 95.617);
-    --color-amber-200: oklch(92.4% 0.12 95.746);
-    --color-amber-300: oklch(87.9% 0.169 91.605);
-    --color-amber-500: oklch(76.9% 0.188 70.08);
-    --color-amber-600: oklch(66.6% 0.179 58.318);
-    --color-amber-700: oklch(55.5% 0.163 48.998);
-    --color-amber-800: oklch(47.3% 0.137 46.201);
-    --color-amber-900: oklch(41.4% 0.112 45.904);
-    --color-yellow-100: oklch(97.3% 0.071 103.193);
-    --color-yellow-300: oklch(90.5% 0.182 98.111);
-    --color-yellow-700: oklch(55.4% 0.135 66.442);
-    --color-green-100: oklch(96.2% 0.044 156.743);
-    --color-green-200: oklch(92.5% 0.084 155.995);
-    --color-green-700: oklch(52.7% 0.154 150.069);
-    --color-emerald-50: oklch(97.9% 0.021 166.113);
-    --color-emerald-100: oklch(95% 0.052 163.051);
-    --color-emerald-200: oklch(90.5% 0.093 164.15);
-    --color-emerald-300: oklch(84.5% 0.143 164.978);
-    --color-emerald-400: oklch(76.5% 0.177 163.223);
-    --color-emerald-600: oklch(59.6% 0.145 163.225);
-    --color-emerald-700: oklch(50.8% 0.118 165.612);
-    --color-sky-50: oklch(97.7% 0.013 236.62);
-    --color-sky-200: oklch(90.1% 0.058 230.902);
-    --color-sky-700: oklch(50% 0.134 242.749);
-    --color-sky-900: oklch(39.1% 0.09 240.876);
-    --color-blue-50: oklch(97% 0.014 254.604);
-    --color-blue-100: oklch(93.2% 0.032 255.585);
-    --color-blue-200: oklch(88.2% 0.059 254.128);
-    --color-blue-700: oklch(48.8% 0.243 264.376);
-    --color-indigo-50: oklch(96.2% 0.018 272.314);
-    --color-indigo-100: oklch(93% 0.034 272.788);
-    --color-indigo-200: oklch(87% 0.065 274.039);
-    --color-indigo-300: oklch(78.5% 0.115 274.713);
-    --color-indigo-400: oklch(67.3% 0.182 276.935);
-    --color-indigo-500: oklch(58.5% 0.233 277.117);
-    --color-indigo-600: oklch(51.1% 0.262 276.966);
-    --color-indigo-700: oklch(45.7% 0.24 277.023);
-    --color-indigo-900: oklch(35.9% 0.144 278.697);
-    --color-indigo-950: oklch(25.7% 0.09 281.288);
-    --color-violet-50: oklch(96.9% 0.016 293.756);
-    --color-violet-200: oklch(89.4% 0.057 293.283);
-    --color-violet-500: oklch(60.6% 0.25 292.717);
-    --color-violet-600: oklch(54.1% 0.281 293.009);
-    --color-violet-700: oklch(49.1% 0.27 292.581);
-    --color-violet-950: oklch(28.3% 0.141 291.089);
-    --color-fuchsia-100: oklch(95.2% 0.037 318.852);
-    --color-fuchsia-700: oklch(51.8% 0.253 323.949);
-    --color-rose-50: oklch(96.9% 0.015 12.422);
-    --color-rose-100: oklch(94.1% 0.03 12.58);
-    --color-rose-200: oklch(89.2% 0.058 10.001);
-    --color-rose-500: oklch(64.5% 0.246 16.439);
-    --color-rose-600: oklch(58.6% 0.253 17.585);
-    --color-rose-700: oklch(51.4% 0.222 16.935);
-    --color-slate-50: oklch(98.4% 0.003 247.858);
-    --color-slate-100: oklch(96.8% 0.007 247.896);
-    --color-slate-200: oklch(92.9% 0.013 255.508);
-    --color-slate-300: oklch(86.9% 0.022 252.894);
-    --color-slate-400: oklch(70.4% 0.04 256.788);
-    --color-slate-500: oklch(55.4% 0.046 257.417);
-    --color-slate-600: oklch(44.6% 0.043 257.281);
-    --color-slate-700: oklch(37.2% 0.044 257.287);
-    --color-slate-800: oklch(27.9% 0.041 260.031);
-    --color-slate-900: oklch(20.8% 0.042 265.755);
-    --color-slate-950: oklch(12.9% 0.042 264.695);
-    --color-white: #fff;
-    --spacing: 0.25rem;
-    --container-md: 28rem;
-    --container-lg: 32rem;
-    --container-2xl: 42rem;
-    --container-3xl: 48rem;
-    --container-6xl: 72rem;
-    --text-xs: 0.75rem;
-    --text-xs--line-height: calc(1 / 0.75);
-    --text-sm: 0.875rem;
-    --text-sm--line-height: calc(1.25 / 0.875);
-    --text-base: 1rem;
-    --text-base--line-height: calc(1.5 / 1);
-    --text-lg: 1.125rem;
-    --text-lg--line-height: calc(1.75 / 1.125);
-    --text-xl: 1.25rem;
-    --text-xl--line-height: calc(1.75 / 1.25);
-    --text-2xl: 1.5rem;
-    --text-2xl--line-height: calc(2 / 1.5);
-    --text-3xl: 1.875rem;
-    --text-3xl--line-height: calc(2.25 / 1.875);
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
-    --font-weight-extrabold: 800;
-    --tracking-tight: -0.025em;
-    --tracking-wide: 0.025em;
-    --tracking-wider: 0.05em;
-    --tracking-widest: 0.1em;
-    --leading-relaxed: 1.625;
-    --radius-md: 0.375rem;
-    --radius-lg: 0.5rem;
-    --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
-    --radius-3xl: 1.5rem;
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);
-    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    --blur-xs: 4px;
-    --blur-sm: 8px;
-    --blur-md: 12px;
-    --blur-xl: 24px;
-    --default-transition-duration: 150ms;
-    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    --default-font-family: var(--font-sans);
-    --default-mono-font-family: var(--font-mono);
-  }
-}
-@layer base {
-  *, ::after, ::before, ::backdrop, ::file-selector-button {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    border: 0 solid;
-  }
-  html, :host {
-    line-height: 1.5;
-    -webkit-text-size-adjust: 100%;
-    tab-size: 4;
-    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
-    font-feature-settings: var(--default-font-feature-settings, normal);
-    font-variation-settings: var(--default-font-variation-settings, normal);
-    -webkit-tap-highlight-color: transparent;
-  }
-  hr {
-    height: 0;
-    color: inherit;
-    border-top-width: 1px;
-  }
-  abbr:where([title]) {
-    -webkit-text-decoration: underline dotted;
-    text-decoration: underline dotted;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-size: inherit;
-    font-weight: inherit;
-  }
-  a {
-    color: inherit;
-    -webkit-text-decoration: inherit;
-    text-decoration: inherit;
-  }
-  b, strong {
-    font-weight: bolder;
-  }
-  code, kbd, samp, pre {
-    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
-    font-feature-settings: var(--default-mono-font-feature-settings, normal);
-    font-variation-settings: var(--default-mono-font-variation-settings, normal);
-    font-size: 1em;
-  }
-  small {
-    font-size: 80%;
-  }
-  sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
-  }
-  sub {
-    bottom: -0.25em;
-  }
-  sup {
-    top: -0.5em;
-  }
-  table {
-    text-indent: 0;
-    border-color: inherit;
-    border-collapse: collapse;
-  }
-  :-moz-focusring {
-    outline: auto;
-  }
-  progress {
-    vertical-align: baseline;
-  }
-  summary {
-    display: list-item;
-  }
-  ol, ul, menu {
-    list-style: none;
-  }
-  img, svg, video, canvas, audio, iframe, embed, object {
-    display: block;
-    vertical-align: middle;
-  }
-  img, video {
-    max-width: 100%;
-    height: auto;
-  }
-  button, input, select, optgroup, textarea, ::file-selector-button {
-    font: inherit;
-    font-feature-settings: inherit;
-    font-variation-settings: inherit;
-    letter-spacing: inherit;
-    color: inherit;
-    border-radius: 0;
-    background-color: transparent;
-    opacity: 1;
-  }
-  :where(select:is([multiple], [size])) optgroup {
-    font-weight: bolder;
-  }
-  :where(select:is([multiple], [size])) optgroup option {
-    padding-inline-start: 20px;
-  }
-  ::file-selector-button {
-    margin-inline-end: 4px;
-  }
-  ::placeholder {
-    opacity: 1;
-  }
-  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
-    ::placeholder {
-      color: currentcolor;
-      @supports (color: color-mix(in lab, red, red)) {
-        color: color-mix(in oklab, currentcolor 50%, transparent);
-      }
-    }
-  }
-  textarea {
-    resize: vertical;
-  }
-  ::-webkit-search-decoration {
-    -webkit-appearance: none;
-  }
-  ::-webkit-date-and-time-value {
-    min-height: 1lh;
-    text-align: inherit;
-  }
-  ::-webkit-datetime-edit {
-    display: inline-flex;
-  }
-  ::-webkit-datetime-edit-fields-wrapper {
-    padding: 0;
-  }
-  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
-    padding-block: 0;
-  }
-  :-moz-ui-invalid {
-    box-shadow: none;
-  }
-  button, input:where([type="button"], [type="reset"], [type="submit"]), ::file-selector-button {
-    appearance: button;
-  }
-  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
-    height: auto;
-  }
-  [hidden]:where(:not([hidden="until-found"])) {
-    display: none !important;
-  }
-}
-@layer utilities {
-  .pointer-events-none {
-    pointer-events: none;
-  }
-  .absolute {
-    position: absolute;
-  }
-  .fixed {
-    position: fixed;
-  }
-  .relative {
-    position: relative;
-  }
-  .sticky {
-    position: sticky;
-  }
-  .inset-0 {
-    inset: calc(var(--spacing) * 0);
-  }
-  .top-0 {
-    top: calc(var(--spacing) * 0);
-  }
-  .top-3 {
-    top: calc(var(--spacing) * 3);
-  }
-  .top-3\.5 {
-    top: calc(var(--spacing) * 3.5);
-  }
-  .top-\[2\.35rem\] {
-    top: 2.35rem;
-  }
-  .top-\[2\.65rem\] {
-    top: 2.65rem;
-  }
-  .right-2\.5 {
-    right: calc(var(--spacing) * 2.5);
-  }
-  .right-3\.5 {
-    right: calc(var(--spacing) * 3.5);
-  }
-  .right-6 {
-    right: calc(var(--spacing) * 6);
-  }
-  .bottom-6 {
-    bottom: calc(var(--spacing) * 6);
-  }
-  .left-3\.5 {
-    left: calc(var(--spacing) * 3.5);
-  }
-  .z-10 {
-    z-index: 10;
-  }
-  .z-20 {
-    z-index: 20;
-  }
-  .z-50 {
-    z-index: 50;
-  }
-  .col-span-1 {
-    grid-column: span 1 / span 1;
-  }
-  .col-span-2 {
-    grid-column: span 2 / span 2;
-  }
-  .col-span-full {
-    grid-column: 1 / -1;
-  }
-  .mx-auto {
-    margin-inline: auto;
-  }
-  .mt-0\.5 {
-    margin-top: calc(var(--spacing) * 0.5);
-  }
-  .mt-1 {
-    margin-top: calc(var(--spacing) * 1);
-  }
-  .mt-1\.5 {
-    margin-top: calc(var(--spacing) * 1.5);
-  }
-  .mt-2 {
-    margin-top: calc(var(--spacing) * 2);
-  }
-  .mt-3 {
-    margin-top: calc(var(--spacing) * 3);
-  }
-  .mt-4 {
-    margin-top: calc(var(--spacing) * 4);
-  }
-  .mt-6 {
-    margin-top: calc(var(--spacing) * 6);
-  }
-  .mr-1 {
-    margin-right: calc(var(--spacing) * 1);
-  }
-  .mr-2 {
-    margin-right: calc(var(--spacing) * 2);
-  }
-  .mr-3 {
-    margin-right: calc(var(--spacing) * 3);
-  }
-  .mb-1 {
-    margin-bottom: calc(var(--spacing) * 1);
-  }
-  .mb-1\.5 {
-    margin-bottom: calc(var(--spacing) * 1.5);
-  }
-  .mb-2 {
-    margin-bottom: calc(var(--spacing) * 2);
-  }
-  .mb-3 {
-    margin-bottom: calc(var(--spacing) * 3);
-  }
-  .mb-4 {
-    margin-bottom: calc(var(--spacing) * 4);
-  }
-  .mb-5 {
-    margin-bottom: calc(var(--spacing) * 5);
-  }
-  .mb-6 {
-    margin-bottom: calc(var(--spacing) * 6);
-  }
-  .mb-7 {
-    margin-bottom: calc(var(--spacing) * 7);
-  }
-  .mb-8 {
-    margin-bottom: calc(var(--spacing) * 8);
-  }
-  .ml-1 {
-    margin-left: calc(var(--spacing) * 1);
-  }
-  .ml-4 {
-    margin-left: calc(var(--spacing) * 4);
-  }
-  .ml-auto {
-    margin-left: auto;
-  }
-  .block {
-    display: block;
-  }
-  .flex {
-    display: flex;
-  }
-  .grid {
-    display: grid;
-  }
-  .hidden {
-    display: none;
-  }
-  .inline-flex {
-    display: inline-flex;
-  }
-  .aspect-square {
-    aspect-ratio: 1 / 1;
-  }
-  .h-3 {
-    height: calc(var(--spacing) * 3);
-  }
-  .h-4 {
-    height: calc(var(--spacing) * 4);
-  }
-  .h-6 {
-    height: calc(var(--spacing) * 6);
-  }
-  .h-7 {
-    height: calc(var(--spacing) * 7);
-  }
-  .h-8 {
-    height: calc(var(--spacing) * 8);
-  }
-  .h-9 {
-    height: calc(var(--spacing) * 9);
-  }
-  .h-10 {
-    height: calc(var(--spacing) * 10);
-  }
-  .h-11 {
-    height: calc(var(--spacing) * 11);
-  }
-  .h-16 {
-    height: calc(var(--spacing) * 16);
-  }
-  .h-\[330px\] {
-    height: 330px;
-  }
-  .h-\[520px\] {
-    height: 520px;
-  }
-  .h-full {
-    height: 100%;
-  }
-  .h-screen {
-    height: 100vh;
-  }
-  .max-h-64 {
-    max-height: calc(var(--spacing) * 64);
-  }
-  .max-h-72 {
-    max-height: calc(var(--spacing) * 72);
-  }
-  .max-h-\[92vh\] {
-    max-height: 92vh;
-  }
-  .max-h-\[330px\] {
-    max-height: 330px;
-  }
-  .min-h-\[420px\] {
-    min-height: 420px;
-  }
-  .w-4 {
-    width: calc(var(--spacing) * 4);
-  }
-  .w-6 {
-    width: calc(var(--spacing) * 6);
-  }
-  .w-7 {
-    width: calc(var(--spacing) * 7);
-  }
-  .w-8 {
-    width: calc(var(--spacing) * 8);
-  }
-  .w-9 {
-    width: calc(var(--spacing) * 9);
-  }
-  .w-10 {
-    width: calc(var(--spacing) * 10);
-  }
-  .w-11 {
-    width: calc(var(--spacing) * 11);
-  }
-  .w-16 {
-    width: calc(var(--spacing) * 16);
-  }
-  .w-64 {
-    width: calc(var(--spacing) * 64);
-  }
-  .w-full {
-    width: 100%;
-  }
-  .w-max {
-    width: max-content;
-  }
-  .max-w-2xl {
-    max-width: var(--container-2xl);
-  }
-  .max-w-3xl {
-    max-width: var(--container-3xl);
-  }
-  .max-w-6xl {
-    max-width: var(--container-6xl);
-  }
-  .max-w-\[180px\] {
-    max-width: 180px;
-  }
-  .max-w-\[300px\] {
-    max-width: 300px;
-  }
-  .max-w-\[1400px\] {
-    max-width: 1400px;
-  }
-  .max-w-\[1500px\] {
-    max-width: 1500px;
-  }
-  .max-w-lg {
-    max-width: var(--container-lg);
-  }
-  .max-w-md {
-    max-width: var(--container-md);
-  }
-  .max-w-none {
-    max-width: none;
-  }
-  .min-w-0 {
-    min-width: calc(var(--spacing) * 0);
-  }
-  .min-w-\[260px\] {
-    min-width: 260px;
-  }
-  .min-w-\[650px\] {
-    min-width: 650px;
-  }
-  .min-w-\[820px\] {
-    min-width: 820px;
-  }
-  .min-w-max {
-    min-width: max-content;
-  }
-  .flex-1 {
-    flex: 1;
-  }
-  .flex-shrink-0 {
-    flex-shrink: 0;
-  }
-  .shrink-0 {
-    flex-shrink: 0;
-  }
-  .border-collapse {
-    border-collapse: collapse;
-  }
-  .translate-y-4 {
-    --tw-translate-y: calc(var(--spacing) * 4);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .transform {
-    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
-  }
-  .animate-pulse {
-    animation: var(--animate-pulse);
-  }
-  .cursor-default {
-    cursor: default;
-  }
-  .cursor-pointer {
-    cursor: pointer;
-  }
-  .list-disc {
-    list-style-type: disc;
-  }
-  .grid-cols-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-  .flex-col {
-    flex-direction: column;
-  }
-  .flex-wrap {
-    flex-wrap: wrap;
-  }
-  .items-center {
-    align-items: center;
-  }
-  .items-end {
-    align-items: flex-end;
-  }
-  .items-start {
-    align-items: flex-start;
-  }
-  .justify-between {
-    justify-content: space-between;
-  }
-  .justify-center {
-    justify-content: center;
-  }
-  .justify-end {
-    justify-content: flex-end;
-  }
-  .gap-1 {
-    gap: calc(var(--spacing) * 1);
-  }
-  .gap-1\.5 {
-    gap: calc(var(--spacing) * 1.5);
-  }
-  .gap-2 {
-    gap: calc(var(--spacing) * 2);
-  }
-  .gap-2\.5 {
-    gap: calc(var(--spacing) * 2.5);
-  }
-  .gap-3 {
-    gap: calc(var(--spacing) * 3);
-  }
-  .gap-4 {
-    gap: calc(var(--spacing) * 4);
-  }
-  .gap-5 {
-    gap: calc(var(--spacing) * 5);
-  }
-  .gap-8 {
-    gap: calc(var(--spacing) * 8);
-  }
-  .space-y-1 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 1) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-1\.5 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-2 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-3 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-4 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-5 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-6 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .gap-x-5 {
-    column-gap: calc(var(--spacing) * 5);
-  }
-  .gap-y-2 {
-    row-gap: calc(var(--spacing) * 2);
-  }
-  .divide-y {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(1px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
-    }
-  }
-  .divide-slate-100 {
-    :where(& > :not(:last-child)) {
-      border-color: var(--color-slate-100);
-    }
-  }
-  .truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .overflow-auto {
-    overflow: auto;
-  }
-  .overflow-hidden {
-    overflow: hidden;
-  }
-  .overflow-y-auto {
-    overflow-y: auto;
-  }
-  .rounded {
-    border-radius: 0.25rem;
-  }
-  .rounded-2xl {
-    border-radius: var(--radius-2xl);
-  }
-  .rounded-3xl {
-    border-radius: var(--radius-3xl);
-  }
-  .rounded-full {
-    border-radius: calc(infinity * 1px);
-  }
-  .rounded-lg {
-    border-radius: var(--radius-lg);
-  }
-  .rounded-md {
-    border-radius: var(--radius-md);
-  }
-  .rounded-xl {
-    border-radius: var(--radius-xl);
-  }
-  .border {
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-  }
-  .border-2 {
-    border-style: var(--tw-border-style);
-    border-width: 2px;
-  }
-  .border-4 {
-    border-style: var(--tw-border-style);
-    border-width: 4px;
-  }
-  .border-t {
-    border-top-style: var(--tw-border-style);
-    border-top-width: 1px;
-  }
-  .border-t-4 {
-    border-top-style: var(--tw-border-style);
-    border-top-width: 4px;
-  }
-  .border-r {
-    border-right-style: var(--tw-border-style);
-    border-right-width: 1px;
-  }
-  .border-b {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-  }
-  .border-dashed {
-    --tw-border-style: dashed;
-    border-style: dashed;
-  }
-  .border-amber-100 {
-    border-color: var(--color-amber-100);
-  }
-  .border-amber-200 {
-    border-color: var(--color-amber-200);
-  }
-  .border-amber-200\/15 {
-    border-color: color-mix(in srgb, oklch(92.4% 0.12 95.746) 15%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-amber-200) 15%, transparent);
-    }
-  }
-  .border-blue-200 {
-    border-color: var(--color-blue-200);
-  }
-  .border-emerald-100 {
-    border-color: var(--color-emerald-100);
-  }
-  .border-emerald-200 {
-    border-color: var(--color-emerald-200);
-  }
-  .border-emerald-300\/15 {
-    border-color: color-mix(in srgb, oklch(84.5% 0.143 164.978) 15%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-emerald-300) 15%, transparent);
-    }
-  }
-  .border-green-200 {
-    border-color: var(--color-green-200);
-  }
-  .border-indigo-100 {
-    border-color: var(--color-indigo-100);
-  }
-  .border-indigo-100\/80 {
-    border-color: color-mix(in srgb, oklch(93% 0.034 272.788) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-indigo-100) 80%, transparent);
-    }
-  }
-  .border-indigo-200 {
-    border-color: var(--color-indigo-200);
-  }
-  .border-indigo-700\/50 {
-    border-color: color-mix(in srgb, oklch(45.7% 0.24 277.023) 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-indigo-700) 50%, transparent);
-    }
-  }
-  .border-orange-200 {
-    border-color: var(--color-orange-200);
-  }
-  .border-red-200 {
-    border-color: var(--color-red-200);
-  }
-  .border-red-500\/20 {
-    border-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
-    }
-  }
-  .border-rose-100 {
-    border-color: var(--color-rose-100);
-  }
-  .border-rose-200 {
-    border-color: var(--color-rose-200);
-  }
-  .border-sky-200 {
-    border-color: var(--color-sky-200);
-  }
-  .border-slate-50 {
-    border-color: var(--color-slate-50);
-  }
-  .border-slate-100 {
-    border-color: var(--color-slate-100);
-  }
-  .border-slate-200 {
-    border-color: var(--color-slate-200);
-  }
-  .border-slate-200\/80 {
-    border-color: color-mix(in srgb, oklch(92.9% 0.013 255.508) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-slate-200) 80%, transparent);
-    }
-  }
-  .border-slate-300 {
-    border-color: var(--color-slate-300);
-  }
-  .border-slate-300\/80 {
-    border-color: color-mix(in srgb, oklch(86.9% 0.022 252.894) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-slate-300) 80%, transparent);
-    }
-  }
-  .border-slate-700 {
-    border-color: var(--color-slate-700);
-  }
-  .border-slate-800\/80 {
-    border-color: color-mix(in srgb, oklch(27.9% 0.041 260.031) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-slate-800) 80%, transparent);
-    }
-  }
-  .border-transparent {
-    border-color: transparent;
-  }
-  .border-violet-200 {
-    border-color: var(--color-violet-200);
-  }
-  .border-white\/10 {
-    border-color: color-mix(in srgb, #fff 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-white) 10%, transparent);
-    }
-  }
-  .border-white\/15 {
-    border-color: color-mix(in srgb, #fff 15%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-white) 15%, transparent);
-    }
-  }
-  .border-white\/20 {
-    border-color: color-mix(in srgb, #fff 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-white) 20%, transparent);
-    }
-  }
-  .border-yellow-300 {
-    border-color: var(--color-yellow-300);
-  }
-  .bg-amber-50 {
-    background-color: var(--color-amber-50);
-  }
-  .bg-amber-50\/10 {
-    background-color: color-mix(in srgb, oklch(98.7% 0.022 95.277) 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-amber-50) 10%, transparent);
-    }
-  }
-  .bg-amber-300\/15 {
-    background-color: color-mix(in srgb, oklch(87.9% 0.169 91.605) 15%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-amber-300) 15%, transparent);
-    }
-  }
-  .bg-blue-50 {
-    background-color: var(--color-blue-50);
-  }
-  .bg-blue-100 {
-    background-color: var(--color-blue-100);
-  }
-  .bg-emerald-50 {
-    background-color: var(--color-emerald-50);
-  }
-  .bg-emerald-400\/10 {
-    background-color: color-mix(in srgb, oklch(76.5% 0.177 163.223) 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-emerald-400) 10%, transparent);
-    }
-  }
-  .bg-emerald-600 {
-    background-color: var(--color-emerald-600);
-  }
-  .bg-fuchsia-100 {
-    background-color: var(--color-fuchsia-100);
-  }
-  .bg-green-100 {
-    background-color: var(--color-green-100);
-  }
-  .bg-indigo-50 {
-    background-color: var(--color-indigo-50);
-  }
-  .bg-indigo-50\/60 {
-    background-color: color-mix(in srgb, oklch(96.2% 0.018 272.314) 60%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-indigo-50) 60%, transparent);
-    }
-  }
-  .bg-indigo-50\/70 {
-    background-color: color-mix(in srgb, oklch(96.2% 0.018 272.314) 70%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-indigo-50) 70%, transparent);
-    }
-  }
-  .bg-indigo-50\/80 {
-    background-color: color-mix(in srgb, oklch(96.2% 0.018 272.314) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-indigo-50) 80%, transparent);
-    }
-  }
-  .bg-indigo-100 {
-    background-color: var(--color-indigo-100);
-  }
-  .bg-indigo-600 {
-    background-color: var(--color-indigo-600);
-  }
-  .bg-orange-50 {
-    background-color: var(--color-orange-50);
-  }
-  .bg-orange-100 {
-    background-color: var(--color-orange-100);
-  }
-  .bg-red-100 {
-    background-color: var(--color-red-100);
-  }
-  .bg-red-500\/10 {
-    background-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-red-500) 10%, transparent);
-    }
-  }
-  .bg-rose-50 {
-    background-color: var(--color-rose-50);
-  }
-  .bg-rose-100 {
-    background-color: var(--color-rose-100);
-  }
-  .bg-rose-600 {
-    background-color: var(--color-rose-600);
-  }
-  .bg-sky-50 {
-    background-color: var(--color-sky-50);
-  }
-  .bg-slate-50 {
-    background-color: var(--color-slate-50);
-  }
-  .bg-slate-50\/50 {
-    background-color: color-mix(in srgb, oklch(98.4% 0.003 247.858) 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-50) 50%, transparent);
-    }
-  }
-  .bg-slate-50\/60 {
-    background-color: color-mix(in srgb, oklch(98.4% 0.003 247.858) 60%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-50) 60%, transparent);
-    }
-  }
-  .bg-slate-50\/70 {
-    background-color: color-mix(in srgb, oklch(98.4% 0.003 247.858) 70%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-50) 70%, transparent);
-    }
-  }
-  .bg-slate-100 {
-    background-color: var(--color-slate-100);
-  }
-  .bg-slate-800 {
-    background-color: var(--color-slate-800);
-  }
-  .bg-slate-900\/40 {
-    background-color: color-mix(in srgb, oklch(20.8% 0.042 265.755) 40%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-900) 40%, transparent);
-    }
-  }
-  .bg-slate-950 {
-    background-color: var(--color-slate-950);
-  }
-  .bg-slate-950\/25 {
-    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 25%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-950) 25%, transparent);
-    }
-  }
-  .bg-slate-950\/50 {
-    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-950) 50%, transparent);
-    }
-  }
-  .bg-slate-950\/60 {
-    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 60%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-slate-950) 60%, transparent);
-    }
-  }
-  .bg-violet-50 {
-    background-color: var(--color-violet-50);
-  }
-  .bg-violet-50\/60 {
-    background-color: color-mix(in srgb, oklch(96.9% 0.016 293.756) 60%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-violet-50) 60%, transparent);
-    }
-  }
-  .bg-violet-600 {
-    background-color: var(--color-violet-600);
-  }
-  .bg-white {
-    background-color: var(--color-white);
-  }
-  .bg-white\/10 {
-    background-color: color-mix(in srgb, #fff 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-white) 10%, transparent);
-    }
-  }
-  .bg-white\/80 {
-    background-color: color-mix(in srgb, #fff 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-white) 80%, transparent);
-    }
-  }
-  .bg-white\/95 {
-    background-color: color-mix(in srgb, #fff 95%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-white) 95%, transparent);
-    }
-  }
-  .bg-yellow-100 {
-    background-color: var(--color-yellow-100);
-  }
-  .bg-gradient-to-br {
-    --tw-gradient-position: to bottom right in oklab;
-    background-image: linear-gradient(var(--tw-gradient-stops));
-  }
-  .bg-gradient-to-r {
-    --tw-gradient-position: to right in oklab;
-    background-image: linear-gradient(var(--tw-gradient-stops));
-  }
-  .bg-gradient-to-tr {
-    --tw-gradient-position: to top right in oklab;
-    background-image: linear-gradient(var(--tw-gradient-stops));
-  }
-  .from-indigo-600 {
-    --tw-gradient-from: var(--color-indigo-600);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .from-indigo-950 {
-    --tw-gradient-from: var(--color-indigo-950);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .from-slate-950 {
-    --tw-gradient-from: var(--color-slate-950);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .via-indigo-900 {
-    --tw-gradient-via: var(--color-indigo-900);
-    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
-    --tw-gradient-stops: var(--tw-gradient-via-stops);
-  }
-  .via-slate-900 {
-    --tw-gradient-via: var(--color-slate-900);
-    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
-    --tw-gradient-stops: var(--tw-gradient-via-stops);
-  }
-  .to-indigo-950 {
-    --tw-gradient-to: var(--color-indigo-950);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .to-violet-500 {
-    --tw-gradient-to: var(--color-violet-500);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .to-violet-600 {
-    --tw-gradient-to: var(--color-violet-600);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .to-violet-950 {
-    --tw-gradient-to: var(--color-violet-950);
-    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-  }
-  .p-2 {
-    padding: calc(var(--spacing) * 2);
-  }
-  .p-2\.5 {
-    padding: calc(var(--spacing) * 2.5);
-  }
-  .p-3 {
-    padding: calc(var(--spacing) * 3);
-  }
-  .p-3\.5 {
-    padding: calc(var(--spacing) * 3.5);
-  }
-  .p-4 {
-    padding: calc(var(--spacing) * 4);
-  }
-  .p-5 {
-    padding: calc(var(--spacing) * 5);
-  }
-  .p-6 {
-    padding: calc(var(--spacing) * 6);
-  }
-  .p-7 {
-    padding: calc(var(--spacing) * 7);
-  }
-  .p-8 {
-    padding: calc(var(--spacing) * 8);
-  }
-  .px-2 {
-    padding-inline: calc(var(--spacing) * 2);
-  }
-  .px-2\.5 {
-    padding-inline: calc(var(--spacing) * 2.5);
-  }
-  .px-3 {
-    padding-inline: calc(var(--spacing) * 3);
-  }
-  .px-3\.5 {
-    padding-inline: calc(var(--spacing) * 3.5);
-  }
-  .px-4 {
-    padding-inline: calc(var(--spacing) * 4);
-  }
-  .px-5 {
-    padding-inline: calc(var(--spacing) * 5);
-  }
-  .px-6 {
-    padding-inline: calc(var(--spacing) * 6);
-  }
-  .px-8 {
-    padding-inline: calc(var(--spacing) * 8);
-  }
-  .py-0\.5 {
-    padding-block: calc(var(--spacing) * 0.5);
-  }
-  .py-1 {
-    padding-block: calc(var(--spacing) * 1);
-  }
-  .py-1\.5 {
-    padding-block: calc(var(--spacing) * 1.5);
-  }
-  .py-2 {
-    padding-block: calc(var(--spacing) * 2);
-  }
-  .py-2\.5 {
-    padding-block: calc(var(--spacing) * 2.5);
-  }
-  .py-3 {
-    padding-block: calc(var(--spacing) * 3);
-  }
-  .py-4 {
-    padding-block: calc(var(--spacing) * 4);
-  }
-  .py-6 {
-    padding-block: calc(var(--spacing) * 6);
-  }
-  .py-8 {
-    padding-block: calc(var(--spacing) * 8);
-  }
-  .py-10 {
-    padding-block: calc(var(--spacing) * 10);
-  }
-  .py-12 {
-    padding-block: calc(var(--spacing) * 12);
-  }
-  .pt-4 {
-    padding-top: calc(var(--spacing) * 4);
-  }
-  .pr-4 {
-    padding-right: calc(var(--spacing) * 4);
-  }
-  .pr-9 {
-    padding-right: calc(var(--spacing) * 9);
-  }
-  .pr-10 {
-    padding-right: calc(var(--spacing) * 10);
-  }
-  .pb-5 {
-    padding-bottom: calc(var(--spacing) * 5);
-  }
-  .pl-5 {
-    padding-left: calc(var(--spacing) * 5);
-  }
-  .pl-9 {
-    padding-left: calc(var(--spacing) * 9);
-  }
-  .pl-10 {
-    padding-left: calc(var(--spacing) * 10);
-  }
-  .text-center {
-    text-align: center;
-  }
-  .text-left {
-    text-align: left;
-  }
-  .text-right {
-    text-align: right;
-  }
-  .align-top {
-    vertical-align: top;
-  }
-  .font-mono {
-    font-family: var(--font-mono);
-  }
-  .text-2xl {
-    font-size: var(--text-2xl);
-    line-height: var(--tw-leading, var(--text-2xl--line-height));
-  }
-  .text-3xl {
-    font-size: var(--text-3xl);
-    line-height: var(--tw-leading, var(--text-3xl--line-height));
-  }
-  .text-base {
-    font-size: var(--text-base);
-    line-height: var(--tw-leading, var(--text-base--line-height));
-  }
-  .text-lg {
-    font-size: var(--text-lg);
-    line-height: var(--tw-leading, var(--text-lg--line-height));
-  }
-  .text-sm {
-    font-size: var(--text-sm);
-    line-height: var(--tw-leading, var(--text-sm--line-height));
-  }
-  .text-xl {
-    font-size: var(--text-xl);
-    line-height: var(--tw-leading, var(--text-xl--line-height));
-  }
-  .text-xs {
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-  }
-  .text-\[9px\] {
-    font-size: 9px;
-  }
-  .text-\[10px\] {
-    font-size: 10px;
-  }
-  .text-\[11px\] {
-    font-size: 11px;
-  }
-  .leading-relaxed {
-    --tw-leading: var(--leading-relaxed);
-    line-height: var(--leading-relaxed);
-  }
-  .font-bold {
-    --tw-font-weight: var(--font-weight-bold);
-    font-weight: var(--font-weight-bold);
-  }
-  .font-extrabold {
-    --tw-font-weight: var(--font-weight-extrabold);
-    font-weight: var(--font-weight-extrabold);
-  }
-  .font-medium {
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
-  }
-  .font-semibold {
-    --tw-font-weight: var(--font-weight-semibold);
-    font-weight: var(--font-weight-semibold);
-  }
-  .tracking-tight {
-    --tw-tracking: var(--tracking-tight);
-    letter-spacing: var(--tracking-tight);
-  }
-  .tracking-wide {
-    --tw-tracking: var(--tracking-wide);
-    letter-spacing: var(--tracking-wide);
-  }
-  .tracking-wider {
-    --tw-tracking: var(--tracking-wider);
-    letter-spacing: var(--tracking-wider);
-  }
-  .tracking-widest {
-    --tw-tracking: var(--tracking-widest);
-    letter-spacing: var(--tracking-widest);
-  }
-  .whitespace-nowrap {
-    white-space: nowrap;
-  }
-  .text-amber-100 {
-    color: var(--color-amber-100);
-  }
-  .text-amber-200 {
-    color: var(--color-amber-200);
-  }
-  .text-amber-300 {
-    color: var(--color-amber-300);
-  }
-  .text-amber-500 {
-    color: var(--color-amber-500);
-  }
-  .text-amber-600 {
-    color: var(--color-amber-600);
-  }
-  .text-amber-700 {
-    color: var(--color-amber-700);
-  }
-  .text-amber-800 {
-    color: var(--color-amber-800);
-  }
-  .text-amber-900 {
-    color: var(--color-amber-900);
-  }
-  .text-blue-700 {
-    color: var(--color-blue-700);
-  }
-  .text-emerald-50 {
-    color: var(--color-emerald-50);
-  }
-  .text-emerald-100 {
-    color: var(--color-emerald-100);
-  }
-  .text-emerald-300 {
-    color: var(--color-emerald-300);
-  }
-  .text-emerald-600 {
-    color: var(--color-emerald-600);
-  }
-  .text-emerald-700 {
-    color: var(--color-emerald-700);
-  }
-  .text-fuchsia-700 {
-    color: var(--color-fuchsia-700);
-  }
-  .text-green-700 {
-    color: var(--color-green-700);
-  }
-  .text-indigo-100 {
-    color: var(--color-indigo-100);
-  }
-  .text-indigo-200 {
-    color: var(--color-indigo-200);
-  }
-  .text-indigo-300 {
-    color: var(--color-indigo-300);
-  }
-  .text-indigo-400 {
-    color: var(--color-indigo-400);
-  }
-  .text-indigo-500 {
-    color: var(--color-indigo-500);
-  }
-  .text-indigo-600 {
-    color: var(--color-indigo-600);
-  }
-  .text-indigo-700 {
-    color: var(--color-indigo-700);
-  }
-  .text-indigo-900 {
-    color: var(--color-indigo-900);
-  }
-  .text-indigo-950 {
-    color: var(--color-indigo-950);
-  }
-  .text-orange-100 {
-    color: var(--color-orange-100);
-  }
-  .text-orange-600 {
-    color: var(--color-orange-600);
-  }
-  .text-orange-700 {
-    color: var(--color-orange-700);
-  }
-  .text-red-400 {
-    color: var(--color-red-400);
-  }
-  .text-red-700 {
-    color: var(--color-red-700);
-  }
-  .text-rose-100 {
-    color: var(--color-rose-100);
-  }
-  .text-rose-500 {
-    color: var(--color-rose-500);
-  }
-  .text-rose-600 {
-    color: var(--color-rose-600);
-  }
-  .text-rose-700 {
-    color: var(--color-rose-700);
-  }
-  .text-sky-700 {
-    color: var(--color-sky-700);
-  }
-  .text-sky-900 {
-    color: var(--color-sky-900);
-  }
-  .text-slate-300 {
-    color: var(--color-slate-300);
-  }
-  .text-slate-400 {
-    color: var(--color-slate-400);
-  }
-  .text-slate-500 {
-    color: var(--color-slate-500);
-  }
-  .text-slate-600 {
-    color: var(--color-slate-600);
-  }
-  .text-slate-700 {
-    color: var(--color-slate-700);
-  }
-  .text-slate-800 {
-    color: var(--color-slate-800);
-  }
-  .text-slate-900 {
-    color: var(--color-slate-900);
-  }
-  .text-slate-950 {
-    color: var(--color-slate-950);
-  }
-  .text-violet-600 {
-    color: var(--color-violet-600);
-  }
-  .text-white {
-    color: var(--color-white);
-  }
-  .text-yellow-700 {
-    color: var(--color-yellow-700);
-  }
-  .uppercase {
-    text-transform: uppercase;
-  }
-  .accent-indigo-600 {
-    accent-color: var(--color-indigo-600);
-  }
-  .accent-violet-600 {
-    accent-color: var(--color-violet-600);
-  }
-  .opacity-0 {
-    opacity: 0%;
-  }
-  .opacity-40 {
-    opacity: 40%;
-  }
-  .opacity-100 {
-    opacity: 100%;
-  }
-  .shadow-2xl {
-    --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-lg {
-    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-md {
-    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-sm {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-xl {
-    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-xs {
-    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .shadow-indigo-500\/20 {
-    --tw-shadow-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-500) 20%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .shadow-indigo-500\/30 {
-    --tw-shadow-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 30%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-500) 30%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .shadow-indigo-600\/20 {
-    --tw-shadow-color: color-mix(in srgb, oklch(51.1% 0.262 276.966) 20%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 20%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .shadow-indigo-600\/25 {
-    --tw-shadow-color: color-mix(in srgb, oklch(51.1% 0.262 276.966) 25%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 25%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .shadow-indigo-950\/10 {
-    --tw-shadow-color: color-mix(in srgb, oklch(25.7% 0.09 281.288) 10%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-950) 10%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .backdrop-blur-md {
-    --tw-backdrop-blur: blur(var(--blur-md));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .backdrop-blur-sm {
-    --tw-backdrop-blur: blur(var(--blur-sm));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .backdrop-blur-xl {
-    --tw-backdrop-blur: blur(var(--blur-xl));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .backdrop-blur-xs {
-    --tw-backdrop-blur: blur(var(--blur-xs));
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .transition-all {
-    transition-property: all;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
-  }
-  .transition-colors {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
-  }
-  .transition-transform {
-    transition-property: transform, translate, scale, rotate;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
-  }
-  .duration-200 {
-    --tw-duration: 200ms;
-    transition-duration: 200ms;
-  }
-  .duration-300 {
-    --tw-duration: 300ms;
-    transition-duration: 300ms;
-  }
-  .duration-500 {
-    --tw-duration: 500ms;
-    transition-duration: 500ms;
-  }
-  .ease-linear {
-    --tw-ease: linear;
-    transition-timing-function: linear;
-  }
-  .ease-out {
-    --tw-ease: var(--ease-out);
-    transition-timing-function: var(--ease-out);
-  }
-  .group-hover\:scale-110 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        --tw-scale-x: 110%;
-        --tw-scale-y: 110%;
-        --tw-scale-z: 110%;
-        scale: var(--tw-scale-x) var(--tw-scale-y);
-      }
-    }
-  }
-  .group-hover\:opacity-100 {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        opacity: 100%;
-      }
-    }
-  }
-  .selection\:bg-indigo-500 {
-    & *::selection {
-      background-color: var(--color-indigo-500);
-    }
-    &::selection {
-      background-color: var(--color-indigo-500);
-    }
-  }
-  .selection\:text-white {
-    & *::selection {
-      color: var(--color-white);
-    }
-    &::selection {
-      color: var(--color-white);
-    }
-  }
-  .hover\:scale-105 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-scale-x: 105%;
-        --tw-scale-y: 105%;
-        --tw-scale-z: 105%;
-        scale: var(--tw-scale-x) var(--tw-scale-y);
-      }
-    }
-  }
-  .hover\:border-indigo-200 {
-    &:hover {
-      @media (hover: hover) {
-        border-color: var(--color-indigo-200);
-      }
-    }
-  }
-  .hover\:border-indigo-600 {
-    &:hover {
-      @media (hover: hover) {
-        border-color: var(--color-indigo-600);
-      }
-    }
-  }
-  .hover\:border-rose-600 {
-    &:hover {
-      @media (hover: hover) {
-        border-color: var(--color-rose-600);
-      }
-    }
-  }
-  .hover\:border-slate-200 {
-    &:hover {
-      @media (hover: hover) {
-        border-color: var(--color-slate-200);
-      }
-    }
-  }
-  .hover\:bg-indigo-50 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-indigo-50);
-      }
-    }
-  }
-  .hover\:bg-indigo-600 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-indigo-600);
-      }
-    }
-  }
-  .hover\:bg-indigo-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-indigo-700);
-      }
-    }
-  }
-  .hover\:bg-red-500\/20 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
-        }
-      }
-    }
-  }
-  .hover\:bg-rose-100 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-rose-100);
-      }
-    }
-  }
-  .hover\:bg-rose-600 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-rose-600);
-      }
-    }
-  }
-  .hover\:bg-rose-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-rose-700);
-      }
-    }
-  }
-  .hover\:bg-slate-50 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-slate-50);
-      }
-    }
-  }
-  .hover\:bg-slate-50\/80 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, oklch(98.4% 0.003 247.858) 80%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-slate-50) 80%, transparent);
-        }
-      }
-    }
-  }
-  .hover\:bg-slate-100 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-slate-100);
-      }
-    }
-  }
-  .hover\:bg-slate-200 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-slate-200);
-      }
-    }
-  }
-  .hover\:bg-slate-900 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-slate-900);
-      }
-    }
-  }
-  .hover\:bg-transparent {
-    &:hover {
-      @media (hover: hover) {
-        background-color: transparent;
-      }
-    }
-  }
-  .hover\:bg-violet-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-violet-700);
-      }
-    }
-  }
-  .hover\:bg-white {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-white);
-      }
-    }
-  }
-  .hover\:bg-white\/15 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: color-mix(in srgb, #fff 15%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          background-color: color-mix(in oklab, var(--color-white) 15%, transparent);
-        }
-      }
-    }
-  }
-  .hover\:from-indigo-700 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-gradient-from: var(--color-indigo-700);
-        --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-      }
-    }
-  }
-  .hover\:to-violet-700 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-gradient-to: var(--color-violet-700);
-        --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
-      }
-    }
-  }
-  .hover\:text-red-300 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-red-300);
-      }
-    }
-  }
-  .hover\:text-slate-600 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-slate-600);
-      }
-    }
-  }
-  .hover\:text-white {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-white);
-      }
-    }
-  }
-  .hover\:shadow-sm {
-    &:hover {
-      @media (hover: hover) {
-        --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
-        box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-      }
-    }
-  }
-  .hover\:shadow-indigo-500\/10 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-shadow-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 10%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-500) 10%, transparent) var(--tw-shadow-alpha), transparent);
-        }
-      }
-    }
-  }
-  .hover\:shadow-indigo-600\/40 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-shadow-color: color-mix(in srgb, oklch(51.1% 0.262 276.966) 40%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 40%, transparent) var(--tw-shadow-alpha), transparent);
-        }
-      }
-    }
-  }
-  .focus\:border-indigo-400 {
-    &:focus {
-      border-color: var(--color-indigo-400);
-    }
-  }
-  .focus\:border-indigo-500 {
-    &:focus {
-      border-color: var(--color-indigo-500);
-    }
-  }
-  .focus\:ring-2 {
-    &:focus {
-      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    }
-  }
-  .focus\:ring-indigo-500 {
-    &:focus {
-      --tw-ring-color: var(--color-indigo-500);
-    }
-  }
-  .focus\:ring-indigo-500\/40 {
-    &:focus {
-      --tw-ring-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 40%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        --tw-ring-color: color-mix(in oklab, var(--color-indigo-500) 40%, transparent);
-      }
-    }
-  }
-  .focus\:ring-indigo-500\/50 {
-    &:focus {
-      --tw-ring-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 50%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        --tw-ring-color: color-mix(in oklab, var(--color-indigo-500) 50%, transparent);
-      }
-    }
-  }
-  .focus\:ring-white {
-    &:focus {
-      --tw-ring-color: var(--color-white);
-    }
-  }
-  .focus\:outline-none {
-    &:focus {
-      --tw-outline-style: none;
-      outline-style: none;
-    }
-  }
-  .active\:scale-95 {
-    &:active {
-      --tw-scale-x: 95%;
-      --tw-scale-y: 95%;
-      --tw-scale-z: 95%;
-      scale: var(--tw-scale-x) var(--tw-scale-y);
-    }
-  }
-  .active\:scale-\[\.99\] {
-    &:active {
-      scale: .99;
-    }
-  }
-  .active\:scale-\[0\.98\] {
-    &:active {
-      scale: 0.98;
-    }
-  }
-  .active\:scale-\[0\.99\] {
-    &:active {
-      scale: 0.99;
-    }
-  }
-  .disabled\:opacity-60 {
-    &:disabled {
-      opacity: 60%;
-    }
-  }
-  .sm\:block {
-    @media (width >= 40rem) {
-      display: block;
-    }
-  }
-  .sm\:w-\[250px\] {
-    @media (width >= 40rem) {
-      width: 250px;
-    }
-  }
-  .sm\:w-\[360px\] {
-    @media (width >= 40rem) {
-      width: 360px;
-    }
-  }
-  .sm\:grid-cols-2 {
-    @media (width >= 40rem) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .sm\:grid-cols-3 {
-    @media (width >= 40rem) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .sm\:flex-row {
-    @media (width >= 40rem) {
-      flex-direction: row;
-    }
-  }
-  .sm\:items-center {
-    @media (width >= 40rem) {
-      align-items: center;
-    }
-  }
-  .sm\:justify-between {
-    @media (width >= 40rem) {
-      justify-content: space-between;
-    }
-  }
-  .md\:col-span-2 {
-    @media (width >= 48rem) {
-      grid-column: span 2 / span 2;
-    }
-  }
-  .md\:col-span-3 {
-    @media (width >= 48rem) {
-      grid-column: span 3 / span 3;
-    }
-  }
-  .md\:w-1\/2 {
-    @media (width >= 48rem) {
-      width: calc(1/2 * 100%);
-    }
-  }
-  .md\:grid-cols-2 {
-    @media (width >= 48rem) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .md\:grid-cols-3 {
-    @media (width >= 48rem) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .md\:grid-cols-12 {
-    @media (width >= 48rem) {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-  }
-  .md\:flex-row {
-    @media (width >= 48rem) {
-      flex-direction: row;
-    }
-  }
-  .md\:items-center {
-    @media (width >= 48rem) {
-      align-items: center;
-    }
-  }
-  .md\:justify-between {
-    @media (width >= 48rem) {
-      justify-content: space-between;
-    }
-  }
-  .md\:p-8 {
-    @media (width >= 48rem) {
-      padding: calc(var(--spacing) * 8);
-    }
-  }
-  .md\:p-9 {
-    @media (width >= 48rem) {
-      padding: calc(var(--spacing) * 9);
-    }
-  }
-  .md\:p-10 {
-    @media (width >= 48rem) {
-      padding: calc(var(--spacing) * 10);
-    }
-  }
-  .md\:text-2xl {
-    @media (width >= 48rem) {
-      font-size: var(--text-2xl);
-      line-height: var(--tw-leading, var(--text-2xl--line-height));
-    }
-  }
-  .md\:text-sm {
-    @media (width >= 48rem) {
-      font-size: var(--text-sm);
-      line-height: var(--tw-leading, var(--text-sm--line-height));
-    }
-  }
-  .lg\:col-span-3 {
-    @media (width >= 64rem) {
-      grid-column: span 3 / span 3;
-    }
-  }
-  .lg\:col-span-4 {
-    @media (width >= 64rem) {
-      grid-column: span 4 / span 4;
-    }
-  }
-  .lg\:col-span-5 {
-    @media (width >= 64rem) {
-      grid-column: span 5 / span 5;
-    }
-  }
-  .lg\:w-\[280px\] {
-    @media (width >= 64rem) {
-      width: 280px;
-    }
-  }
-  .lg\:grid-cols-2 {
-    @media (width >= 64rem) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .lg\:grid-cols-12 {
-    @media (width >= 64rem) {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-  }
-  .lg\:flex-row {
-    @media (width >= 64rem) {
-      flex-direction: row;
-    }
-  }
-  .lg\:items-center {
-    @media (width >= 64rem) {
-      align-items: center;
-    }
-  }
-  .lg\:items-end {
-    @media (width >= 64rem) {
-      align-items: flex-end;
-    }
-  }
-  .lg\:items-start {
-    @media (width >= 64rem) {
-      align-items: flex-start;
-    }
-  }
-  .lg\:justify-between {
-    @media (width >= 64rem) {
-      justify-content: space-between;
-    }
-  }
-  .xl\:col-span-3 {
-    @media (width >= 80rem) {
-      grid-column: span 3 / span 3;
-    }
-  }
-  .xl\:w-\[360px\] {
-    @media (width >= 80rem) {
-      width: 360px;
-    }
-  }
-  .xl\:w-\[780px\] {
-    @media (width >= 80rem) {
-      width: 780px;
-    }
-  }
-  .xl\:w-auto {
-    @media (width >= 80rem) {
-      width: auto;
-    }
-  }
-  .xl\:max-w-md {
-    @media (width >= 80rem) {
-      max-width: var(--container-md);
-    }
-  }
-  .xl\:min-w-\[620px\] {
-    @media (width >= 80rem) {
-      min-width: 620px;
-    }
-  }
-  .xl\:grid-cols-3 {
-    @media (width >= 80rem) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .xl\:grid-cols-4 {
-    @media (width >= 80rem) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-  .xl\:grid-cols-\[320px\,1fr\] {
-    @media (width >= 80rem) {
-      grid-template-columns: 320px,1fr;
-    }
-  }
-  .xl\:flex-row {
-    @media (width >= 80rem) {
-      flex-direction: row;
-    }
-  }
-  .xl\:items-center {
-    @media (width >= 80rem) {
-      align-items: center;
-    }
-  }
-  .xl\:items-end {
-    @media (width >= 80rem) {
-      align-items: flex-end;
-    }
-  }
-  .xl\:justify-between {
-    @media (width >= 80rem) {
-      justify-content: space-between;
-    }
-  }
-  .\[\&\>option\]\:text-slate-800 {
-    &>option {
-      color: var(--color-slate-800);
-    }
-  }
-}
-@property --tw-translate-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-translate-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-translate-z {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-rotate-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-y {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-z {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-y {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-space-y-reverse {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-divide-y-reverse {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
-@property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
-@property --tw-gradient-position {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-gradient-from {
-  syntax: "<color>";
-  inherits: false;
-  initial-value: #0000;
-}
-@property --tw-gradient-via {
-  syntax: "<color>";
-  inherits: false;
-  initial-value: #0000;
-}
-@property --tw-gradient-to {
-  syntax: "<color>";
-  inherits: false;
-  initial-value: #0000;
-}
-@property --tw-gradient-stops {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-gradient-via-stops {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-gradient-from-position {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --tw-gradient-via-position {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 50%;
-}
-@property --tw-gradient-to-position {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-@property --tw-leading {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-font-weight {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-tracking {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-shadow {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0 0 #0000;
-}
-@property --tw-shadow-color {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-shadow-alpha {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-@property --tw-inset-shadow {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0 0 #0000;
-}
-@property --tw-inset-shadow-color {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-inset-shadow-alpha {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-@property --tw-ring-color {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-ring-shadow {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0 0 #0000;
-}
-@property --tw-inset-ring-color {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-inset-ring-shadow {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0 0 #0000;
-}
-@property --tw-ring-inset {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-ring-offset-width {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-@property --tw-ring-offset-color {
-  syntax: "*";
-  inherits: false;
-  initial-value: #fff;
-}
-@property --tw-ring-offset-shadow {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0 0 #0000;
-}
-@property --tw-backdrop-blur {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-brightness {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-contrast {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-grayscale {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-hue-rotate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-invert {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-opacity {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-saturate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-backdrop-sepia {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-duration {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-ease {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-scale-x {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-y {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@property --tw-scale-z {
-  syntax: "*";
-  inherits: false;
-  initial-value: 1;
-}
-@keyframes pulse {
-  50% {
-    opacity: 0.5;
-  }
-}
-@layer properties {
-  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
-    *, ::before, ::after, ::backdrop {
-      --tw-translate-x: 0;
-      --tw-translate-y: 0;
-      --tw-translate-z: 0;
-      --tw-rotate-x: initial;
-      --tw-rotate-y: initial;
-      --tw-rotate-z: initial;
-      --tw-skew-x: initial;
-      --tw-skew-y: initial;
-      --tw-space-y-reverse: 0;
-      --tw-divide-y-reverse: 0;
-      --tw-border-style: solid;
-      --tw-gradient-position: initial;
-      --tw-gradient-from: #0000;
-      --tw-gradient-via: #0000;
-      --tw-gradient-to: #0000;
-      --tw-gradient-stops: initial;
-      --tw-gradient-via-stops: initial;
-      --tw-gradient-from-position: 0%;
-      --tw-gradient-via-position: 50%;
-      --tw-gradient-to-position: 100%;
-      --tw-leading: initial;
-      --tw-font-weight: initial;
-      --tw-tracking: initial;
-      --tw-shadow: 0 0 #0000;
-      --tw-shadow-color: initial;
-      --tw-shadow-alpha: 100%;
-      --tw-inset-shadow: 0 0 #0000;
-      --tw-inset-shadow-color: initial;
-      --tw-inset-shadow-alpha: 100%;
-      --tw-ring-color: initial;
-      --tw-ring-shadow: 0 0 #0000;
-      --tw-inset-ring-color: initial;
-      --tw-inset-ring-shadow: 0 0 #0000;
-      --tw-ring-inset: initial;
-      --tw-ring-offset-width: 0px;
-      --tw-ring-offset-color: #fff;
-      --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-backdrop-blur: initial;
-      --tw-backdrop-brightness: initial;
-      --tw-backdrop-contrast: initial;
-      --tw-backdrop-grayscale: initial;
-      --tw-backdrop-hue-rotate: initial;
-      --tw-backdrop-invert: initial;
-      --tw-backdrop-opacity: initial;
-      --tw-backdrop-saturate: initial;
-      --tw-backdrop-sepia: initial;
-      --tw-duration: initial;
-      --tw-ease: initial;
-      --tw-scale-x: 1;
-      --tw-scale-y: 1;
-      --tw-scale-z: 1;
-    }
-  }
-}
-
-    </style>
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -2630,8 +146,17 @@
         .access-check-item.is-checked { background: #eef2ff; border-color: #c7d2fe; }
         .access-check-item input:checked + span { color: #312e81; font-weight: 800; }
 
+        /* Fast-start local cache / restore shell */
+        html.grace-cache-booted #app-boot-screen { opacity: 0 !important; pointer-events: none !important; }
+        #app-boot-screen.is-hidden { display: none !important; }
+        #data-loading-screen.is-visible { display: flex !important; }
+        #data-loading-screen.is-hidden { display: none !important; }
+        .data-sync-indicator { transition: color .2s ease, background-color .2s ease, border-color .2s ease; }
+        @media (max-width: 640px) {
+            #data-loading-screen > div { padding: 1.25rem; border-radius: 1.25rem; }
+        }
         /* ================================================================
-           RESPONSIVE UI / UX OVERHAUL
+           RESTORED RESPONSIVE NAVIGATION / SIDEBAR UI
            Visual and interaction improvements only; application logic stays intact.
            ================================================================ */
         :root {
@@ -3041,9 +566,37 @@
             body.mobile-nav-open { overflow: hidden; }
         }
 
+
     </style>
 </head>
 <body class="text-slate-800 h-screen flex overflow-hidden relative selection:bg-indigo-500 selection:text-white">
+
+    <div id="app-boot-screen" class="fixed inset-0 bg-slate-950 z-[70] flex items-center justify-center p-5 transition-opacity duration-200">
+        <div class="w-full max-w-sm text-center text-white">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-5 shadow-2xl shadow-indigo-950/40">
+                <i class="fa-solid fa-graduation-cap text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-extrabold tracking-tight">MCU K-10 GRACE SBA</h2>
+            <p id="app-boot-message" class="text-xs text-slate-300 mt-2">Restoring your workspace...</p>
+            <div class="mt-5 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                <div class="h-full w-1/2 rounded-full bg-indigo-500 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="data-loading-screen" class="hidden fixed inset-0 bg-slate-950/45 backdrop-blur-sm z-[65] items-center justify-center p-5">
+        <div class="w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 p-6 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-database text-lg"></i>
+            </div>
+            <h2 class="text-base font-extrabold text-slate-900">Loading Assessment Data</h2>
+            <p id="data-loading-message" class="text-xs text-slate-500 mt-1.5">Preparing your assessment workspace...</p>
+            <div class="mt-5 h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full w-1/3 rounded-full bg-indigo-600 animate-pulse"></div>
+            </div>
+            <p id="data-loading-detail" class="text-[10px] text-slate-400 mt-3">First-time loading may take a little longer.</p>
+        </div>
+    </div>
 
     <div id="login-screen" class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 z-50 flex items-center justify-center p-4 transition-all duration-500">
         <!-- Login UI Remains the Same -->
@@ -3128,7 +681,7 @@
         </div>
     </aside>
 
-    <div id="mobile-sidebar-backdrop" aria-hidden="true" onclick="closeMobileSidebar()"></div>
+    <div id="mobile-sidebar-backdrop" aria-hidden="true" onclick="window.closeMobileSidebar()"></div>
 
     <main id="main-content" class="flex-1 flex flex-col h-screen overflow-hidden relative hidden">
         
@@ -3143,6 +696,9 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <span id="data-sync-status" class="data-sync-indicator hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-500">
+                    <i id="data-sync-status-icon" class="fa-solid fa-database text-[9px]"></i><span id="data-sync-status-text">Ready</span>
+                </span>
                 <button id="btn-batch-delete" onclick="batchDeleteFiltered()" class="hidden px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-semibold transition-all border border-rose-200 shadow-xs items-center gap-2 active:scale-95">
                     <i class="fa-solid fa-trash-can"></i> Batch Delete View
                 </button>
@@ -4058,7 +1614,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, onSnapshot, getDocs, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, onSnapshot, getDocs, getDocsFromServer, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // AI configuration — SINGLE HTML FILE MODE
         // Gemini is the primary external intervention provider.
@@ -4114,6 +1670,31 @@
         let comparisonSelectedGroups = new Set();
         let currentBatchEditMode = 'all';
 
+        // IMPORTANT: declare this before any startup/bootstrap/cache path can call
+        // getProfileGrades(). Function declarations are hoisted, but lexical const
+        // bindings are not initialized until execution reaches their declaration.
+        const STANDARD_GRADE_OPTIONS = ['Kindergarten', ...Array.from({ length: 12 }, (_, i) => String(i + 1))];
+
+        // Data Management performance helpers. These affect rendering only; the
+        // underlying assessment data and filtering logic remain unchanged.
+        let dataFilterRenderTimer = null;
+        let dataRenderSequence = 0;
+
+        // Fast-start cache: IndexedDB first, localStorage fallback.
+        const GRACE_CACHE_VERSION = 2;
+        const GRACE_CACHE_DB = 'grace-sba-local-cache-v2';
+        const GRACE_CACHE_STORE = 'records';
+        const GRACE_CACHE_FALLBACK_PREFIX = 'grace_assessments_cache_v2_';
+        const GRACE_PROFILE_CACHE_PREFIX = 'grace_profile_cache_v2_';
+        const GRACE_UI_STATE_PREFIX = 'grace_ui_state_v2_';
+        let assessmentCacheDBPromise = null;
+        let currentSessionCacheKey = '';
+        let uiStateRestored = false;
+        let pendingDataSubscription = false;
+        let assessmentServerSyncReceived = false;
+        let lastDataSnapshotAt = 0;
+        let cacheWriteTimer = null;
+
         window.togglePasswordVisibility = (inputId, iconId) => {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
@@ -4126,30 +1707,418 @@
             }
         };
 
+        function safeLocalStorageGet(key) {
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+
+        function safeLocalStorageSet(key, value) {
+            try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+        }
+
+        function safeLocalStorageRemove(key) {
+            try { localStorage.removeItem(key); } catch (e) {}
+        }
+
+        function getSessionEmail() {
+            return String(safeLocalStorageGet('grace_session_email') || '').trim().toLowerCase();
+        }
+
+        function getCachedProfileKey(email) {
+            return `${GRACE_PROFILE_CACHE_PREFIX}${encodeURIComponent(String(email || '').toLowerCase())}`;
+        }
+
+        function getUIStateKey(email) {
+            return `${GRACE_UI_STATE_PREFIX}${encodeURIComponent(String(email || '').toLowerCase())}`;
+        }
+
+        function getAssessmentCacheKey(profile = userProfile) {
+            if (!profile?.email) return '';
+            const grades = getProfileGrades(profile).join('|');
+            const sections = getProfileSections(profile).join('|');
+            return [appId, String(profile.email).trim().toLowerCase(), profile.role || 'teacher', grades, sections].map(encodeURIComponent).join('::');
+        }
+
+        function setBootMessage(message) {
+            const el = document.getElementById('app-boot-message');
+            if (el) el.textContent = message;
+        }
+
+        function showBootScreen(message = 'Restoring your workspace...') {
+            setBootMessage(message);
+            const el = document.getElementById('app-boot-screen');
+            if (el) {
+                el.classList.remove('is-hidden');
+                el.style.display = 'flex';
+                requestAnimationFrame(() => el.classList.remove('opacity-0'));
+            }
+        }
+
+        function hideBootScreen() {
+            const el = document.getElementById('app-boot-screen');
+            if (!el) return;
+            el.classList.add('opacity-0');
+            el.classList.add('is-hidden');
+        }
+
+        function showDataLoading(message = 'Preparing your assessment workspace...', detail = 'Downloading the first copy of your accessible assessment data.') {
+            const screen = document.getElementById('data-loading-screen');
+            if (!screen) return;
+            document.getElementById('data-loading-message').textContent = message;
+            document.getElementById('data-loading-detail').textContent = detail;
+            screen.classList.remove('is-hidden');
+            screen.classList.add('is-visible');
+        }
+
+        function hideDataLoading() {
+            const screen = document.getElementById('data-loading-screen');
+            if (!screen) return;
+            screen.classList.remove('is-visible');
+            screen.classList.add('is-hidden');
+        }
+
+        function setDataSyncStatus(textValue, tone = 'ready') {
+            const chip = document.getElementById('data-sync-status');
+            const textEl = document.getElementById('data-sync-status-text');
+            const icon = document.getElementById('data-sync-status-icon');
+            if (!chip || !textEl || !icon) return;
+            const tones = {
+                ready: ['bg-slate-50','text-slate-500','border-slate-200','fa-database'],
+                cached: ['bg-amber-50','text-amber-700','border-amber-200','fa-bolt'],
+                syncing: ['bg-indigo-50','text-indigo-700','border-indigo-200','fa-arrows-rotate','fa-spin'],
+                offline: ['bg-slate-100','text-slate-600','border-slate-200','fa-cloud-arrow-down'],
+                synced: ['bg-emerald-50','text-emerald-700','border-emerald-200','fa-circle-check']
+            };
+            const t = tones[tone] || tones.ready;
+            chip.className = 'data-sync-indicator hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold';
+            chip.classList.add(...t.slice(0,3));
+            textEl.textContent = textValue;
+            icon.className = `fa-solid ${t[3]} text-[9px]`;
+            if (t[4]) icon.classList.add(t[4]);
+        }
+
+        function cacheClone(value) {
+            try { return JSON.parse(JSON.stringify(value)); } catch (e) { return []; }
+        }
+
+        function openAssessmentCacheDB() {
+            if (assessmentCacheDBPromise) return assessmentCacheDBPromise;
+            assessmentCacheDBPromise = new Promise((resolve, reject) => {
+                if (!('indexedDB' in window)) return reject(new Error('IndexedDB unavailable'));
+                const req = indexedDB.open(GRACE_CACHE_DB, 1);
+                req.onupgradeneeded = () => {
+                    const dbRef = req.result;
+                    if (!dbRef.objectStoreNames.contains(GRACE_CACHE_STORE)) dbRef.createObjectStore(GRACE_CACHE_STORE, { keyPath: 'key' });
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error || new Error('IndexedDB open failed'));
+            });
+            return assessmentCacheDBPromise;
+        }
+
+        async function writeAssessmentCache(profile, data) {
+            const key = getAssessmentCacheKey(profile);
+            if (!key) return;
+            const payload = { key, version: GRACE_CACHE_VERSION, savedAt: Date.now(), email: profile.email, data: cacheClone(data) };
+            try {
+                const dbRef = await openAssessmentCacheDB();
+                await new Promise((resolve, reject) => {
+                    const tx = dbRef.transaction(GRACE_CACHE_STORE, 'readwrite');
+                    tx.objectStore(GRACE_CACHE_STORE).put(payload);
+                    tx.oncomplete = resolve;
+                    tx.onerror = () => reject(tx.error);
+                });
+            } catch (e) {
+                safeLocalStorageSet(`${GRACE_CACHE_FALLBACK_PREFIX}${encodeURIComponent(key)}`, JSON.stringify(payload));
+            }
+        }
+
+        async function readAssessmentCache(profile) {
+            const key = getAssessmentCacheKey(profile);
+            if (!key) return null;
+            try {
+                const dbRef = await openAssessmentCacheDB();
+                const result = await new Promise((resolve, reject) => {
+                    const tx = dbRef.transaction(GRACE_CACHE_STORE, 'readonly');
+                    const req = tx.objectStore(GRACE_CACHE_STORE).get(key);
+                    req.onsuccess = () => resolve(req.result || null);
+                    req.onerror = () => reject(req.error);
+                });
+                if (result && Array.isArray(result.data)) return result;
+            } catch (e) {}
+            try {
+                const raw = safeLocalStorageGet(`${GRACE_CACHE_FALLBACK_PREFIX}${encodeURIComponent(key)}`);
+                if (!raw) return null;
+                const result = JSON.parse(raw);
+                return result && Array.isArray(result.data) ? result : null;
+            } catch (e) { return null; }
+        }
+
+        function scheduleAssessmentCacheWrite() {
+            if (!userProfile || !Array.isArray(accessibleAssessmentsData)) return;
+            clearTimeout(cacheWriteTimer);
+            cacheWriteTimer = setTimeout(() => writeAssessmentCache(userProfile, accessibleAssessmentsData), 250);
+        }
+
+        function cacheProfile(profile) {
+            if (!profile?.email) return;
+            const safeProfile = { ...profile };
+            delete safeProfile.password;
+            safeLocalStorageSet(getCachedProfileKey(profile.email), JSON.stringify({ version: GRACE_CACHE_VERSION, savedAt: Date.now(), profile: safeProfile }));
+        }
+
+        function readCachedProfile(email) {
+            try {
+                const raw = safeLocalStorageGet(getCachedProfileKey(email));
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                return parsed?.profile || null;
+            } catch (e) { return null; }
+        }
+
+        function captureUIState() {
+            const email = userProfile?.email || getSessionEmail();
+            if (!email) return;
+            const activeTab = document.querySelector('.tab-content.active')?.id || safeLocalStorageGet(getUIStateKey(email))?.lastTab || 'dashboard-tab';
+            const state = {
+                lastTab: activeTab,
+                schoolYear: universalSchoolYear,
+                dashboardSubject: document.getElementById('dashboard-subject-filter')?.value || '',
+                dashboardCompetency: document.getElementById('dashboard-competency-filter')?.value || '',
+                chartCompetency: document.getElementById('dash-chart-competency-filter')?.value || '',
+                dashFilterType: document.getElementById('dash-filter-type')?.value || 'all',
+                dashFilterValue: document.getElementById('dash-filter-value')?.value || '',
+                dataSearch: document.getElementById('student-search')?.value || '',
+                aiSubject: document.getElementById('ai-subject-filter')?.value || '',
+                aiCompetency: document.getElementById('ai-competency-filter')?.value || '',
+                aiPriorityLens: document.getElementById('ai-priority-lens')?.value || 'auto',
+                analysisType: document.getElementById('analysis-type')?.value || 'grade',
+                analysisTarget: document.getElementById('analysis-target')?.value || '',
+                comparisonDimension: document.getElementById('comparison-dimension')?.value || 'grade',
+                comparisonMetric: document.getElementById('comparison-metric')?.value || 'average',
+                comparisonChartType: document.getElementById('comparison-chart-type')?.value || 'bar',
+                comparisonGrade: document.getElementById('comparison-filter-grade')?.value || '',
+                comparisonSection: document.getElementById('comparison-filter-section')?.value || '',
+                comparisonTestType: document.getElementById('comparison-filter-testType')?.value || '',
+                comparisonSelectedGroups: Array.from(comparisonSelectedGroups || []),
+                savedAt: Date.now()
+            };
+            safeLocalStorageSet(getUIStateKey(email), JSON.stringify(state));
+        }
+
+        function readUIState(email = userProfile?.email || getSessionEmail()) {
+            if (!email) return null;
+            try {
+                const raw = safeLocalStorageGet(getUIStateKey(email));
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) { return null; }
+        }
+
+        function setSelectIfAvailable(id, value) {
+            const select = document.getElementById(id);
+            if (!select || value === undefined || value === null) return false;
+            const exists = Array.from(select.options).some(opt => String(opt.value) === String(value));
+            if (!exists) return false;
+            select.value = value;
+            return true;
+        }
+
+        function restoreUIStateAfterDataReady() {
+            const state = readUIState();
+            if (!state) return;
+            if (state.schoolYear) universalSchoolYear = state.schoolYear;
+            syncSchoolYearFilters();
+            setSelectIfAvailable('dashboard-subject-filter', state.dashboardSubject || '');
+            syncDashboardCompetencyFilters();
+            setSelectIfAvailable('dashboard-competency-filter', state.dashboardCompetency || '');
+            setSelectIfAvailable('dash-chart-competency-filter', state.chartCompetency || state.dashboardCompetency || '');
+
+            const dashType = document.getElementById('dash-filter-type');
+            if (dashType && state.dashFilterType) dashType.value = state.dashFilterType;
+            updateDashFilterValues();
+            setSelectIfAvailable('dash-filter-value', state.dashFilterValue || '');
+
+            const search = document.getElementById('student-search');
+            if (search) search.value = state.dataSearch || '';
+
+            setSelectIfAvailable('ai-subject-filter', state.aiSubject || '');
+            syncAICompetencyFilter();
+            setSelectIfAvailable('ai-competency-filter', state.aiCompetency || '');
+            setSelectIfAvailable('ai-priority-lens', state.aiPriorityLens || 'auto');
+            setSelectIfAvailable('analysis-type', state.analysisType || 'grade');
+            populateAISelects();
+            setSelectIfAvailable('analysis-target', state.analysisTarget || '');
+
+            setSelectIfAvailable('comparison-dimension', state.comparisonDimension || 'grade');
+            setSelectIfAvailable('comparison-metric', state.comparisonMetric || 'average');
+            setSelectIfAvailable('comparison-chart-type', state.comparisonChartType || 'bar');
+            setSelectIfAvailable('comparison-filter-grade', state.comparisonGrade || '');
+            setSelectIfAvailable('comparison-filter-section', state.comparisonSection || '');
+            setSelectIfAvailable('comparison-filter-testType', state.comparisonTestType || '');
+            if (Array.isArray(state.comparisonSelectedGroups)) comparisonSelectedGroups = new Set(state.comparisonSelectedGroups);
+
+            filterAndRenderData({ immediate: true });
+            populateAISelects();
+            updateDashFilterValues();
+            updateDashboardSummary();
+            updateComparisonControls();
+            setSelectIfAvailable('dash-filter-value', state.dashFilterValue || '');
+            renderDashboardChart();
+            renderComparisonChart();
+        }
+
+        function getStoredLastTab(email) {
+            const state = readUIState(email);
+            return state?.lastTab && document.getElementById(state.lastTab) ? state.lastTab : 'dashboard-tab';
+        }
+
+        async function hydrateCachedAssessments(profile) {
+            const cached = await readAssessmentCache(profile);
+            if (assessmentServerSyncReceived || userProfile?.email !== profile.email) return false;
+            if (!cached || !Array.isArray(cached.data)) return false;
+            allAssessmentsData = cached.data;
+            refreshAssessmentViews();
+            uiStateRestored = true;
+            hideDataLoading();
+            setDataSyncStatus('Cached · syncing', 'cached');
+            return true;
+        }
+
+        function refreshAssessmentViews() {
+            refreshAccessibleData();
+            populateSchoolYearFilters();
+            populateGlobalSubjectFilters();
+
+            // Restore the saved controls after the first usable data set is available.
+            if (!uiStateRestored) {
+                restoreUIStateAfterDataReady();
+                uiStateRestored = true;
+            } else {
+                filterAndRenderData({ immediate: true });
+                populateAISelects();
+                updateDashFilterValues();
+                updateDashboardSummary();
+                updateComparisonControls();
+            }
+
+            if (userProfile?.role === 'admin') refreshTeacherAccessChecklists();
+        }
+
+        async function usePersistentFirestoreCache(appInstance) {
+            try {
+                return initializeFirestore(appInstance, {
+                    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+                });
+            } catch (error) {
+                console.warn('Persistent Firestore cache unavailable; using standard Firestore.', error);
+                return getFirestore(appInstance);
+            }
+        }
+
+        function bootstrapCachedSession() {
+            const email = getSessionEmail();
+            const pass = String(safeLocalStorageGet('grace_session_pass') || '');
+            if (!email || !pass) return false;
+            const cachedProfile = readCachedProfile(email);
+            if (cachedProfile) {
+                userProfile = cachedProfile;
+                currentSessionCacheKey = '';
+                assessmentServerSyncReceived = false;
+                showBootScreen('Restoring your last workspace...');
+                authorizeUser(cachedProfile, { optimistic: true });
+                hydrateCachedAssessments(cachedProfile).catch(() => {});
+                return true;
+            }
+            showBootScreen('Restoring your saved session...');
+            return true;
+        }
+
+        function completeBootToLogin() {
+            hideBootScreen();
+            showLoginScreen();
+        }
+
+        // Firebase must be initialized before cached-session restoration because the
+        // restored workspace can open the Users tab and read Firestore-backed profiles.
+        let hadSavedSession = false;
+
         try {
             app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
+            db = await usePersistentFirestoreCache(app);
             auth = getAuth(app);
+
+            // Now that db/auth exist, it is safe for cached-session restoration to
+            // activate the dashboard/navigation and any admin-only Firebase views.
+            hadSavedSession = bootstrapCachedSession();
             initAuthListener();
+            if (!hadSavedSession) showLoginScreen();
         } catch (e) {
             console.error("Firebase init failed", e);
-            showToast("Failed to initialize database connection.", "error");
+
+            // Keep the local workspace available even when Firebase itself is unavailable.
+            // The Users table and data subscription both contain db guards, so cache-only
+            // startup never calls collection() with an uninitialized Firestore instance.
+            if (!userProfile) {
+                try {
+                    hadSavedSession = bootstrapCachedSession();
+                } catch (cacheError) {
+                    console.error("Cached-session restore failed", cacheError);
+                }
+            }
+
+            if (userProfile) {
+                hideBootScreen();
+                setDataSyncStatus('Offline · cache only', 'offline');
+            } else {
+                completeBootToLogin();
+            }
+            showToast("Failed to initialize database connection. Cached data remains available when present.", "error");
         }
 
         function initAuthListener() {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     activeUser = user;
-                    const savedEmail = localStorage.getItem('grace_session_email');
-                    const savedPass = localStorage.getItem('grace_session_pass');
-                    if (savedEmail && savedPass && !userProfile) {
-                        attemptAutoLogin(savedEmail, savedPass);
+                    const savedEmail = getSessionEmail();
+                    const savedPass = String(safeLocalStorageGet('grace_session_pass') || '');
+
+                    // Start the live assessment listener immediately when a cached workspace
+                    // already exists. This prevents profile re-validation from blocking the
+                    // Firebase data stream on refresh.
+                    if (userProfile && savedEmail && String(userProfile.email || '').toLowerCase() === savedEmail && !unsubscribeAssessments) {
+                        initDataSubscription();
+                    }
+
+                    if (savedEmail && savedPass) {
+                        // Validate the cached profile in the background. The workspace and
+                        // assessment sync are already allowed to proceed in parallel.
+                        await attemptAutoLogin(savedEmail, savedPass);
+                    } else if (!userProfile) {
+                        completeBootToLogin();
+                    } else if (!unsubscribeAssessments) {
+                        initDataSubscription();
                     }
                 } else {
                     activeUser = null;
-                    userProfile = null;
-                    showLoginScreen();
-                    cleanupSubscriptions();
+                    const savedEmail = getSessionEmail();
+                    const savedPass = String(safeLocalStorageGet('grace_session_pass') || '');
+                    if (savedEmail && savedPass) {
+                        // Keep the cached workspace visible while Firebase restores anonymous auth.
+                        if (userProfile) {
+                            setDataSyncStatus('Offline · restoring', 'offline');
+                        } else {
+                            showBootScreen('Restoring your saved session...');
+                        }
+                        try {
+                            await signInAnonymously(auth);
+                        } catch (err) {
+                            console.error('Anonymous auth restore failed', err);
+                            if (!userProfile) completeBootToLogin();
+                        }
+                    } else {
+                        userProfile = null;
+                        showLoginScreen();
+                        cleanupSubscriptions();
+                    }
                 }
             });
         }
@@ -4159,7 +2128,7 @@
                 const profilesCol = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
                 const q = query(profilesCol, where("email", "==", email));
                 const querySnapshot = await getDocs(q);
-                
+
                 let foundProfile = null;
                 if (!querySnapshot.empty) {
                     const docSnap = querySnapshot.docs[0];
@@ -4170,20 +2139,38 @@
                     foundProfile = { email: 'admin@grace.edu', role: 'admin', password: 'admin123' };
                 }
 
-                if (foundProfile) {
-                    const storedPass = foundProfile.password || (email === 'admin@grace.edu' ? 'admin123' : 'teacher123');
-                    if (storedPass === password) {
-                        authorizeUser(foundProfile);
-                        return;
-                    }
+                if (!foundProfile) {
+                    safeLocalStorageRemove('grace_session_email');
+                    safeLocalStorageRemove('grace_session_pass');
+                    userProfile = null;
+                    cleanupSubscriptions();
+                    completeBootToLogin();
+                    return;
                 }
-                
-                localStorage.removeItem('grace_session_email');
-                localStorage.removeItem('grace_session_pass');
-                showLoginScreen();
+
+                const storedPass = foundProfile.password || (email === 'admin@grace.edu' ? 'admin123' : 'teacher123');
+                if (storedPass !== password) {
+                    safeLocalStorageRemove('grace_session_email');
+                    safeLocalStorageRemove('grace_session_pass');
+                    userProfile = null;
+                    cleanupSubscriptions();
+                    completeBootToLogin();
+                    return;
+                }
+
+                cacheProfile(foundProfile);
+                authorizeUser(foundProfile, { optimistic: !!userProfile });
+                setDataSyncStatus('Syncing…', 'syncing');
             } catch (err) {
-                console.error("Auto login failed", err);
-                showLoginScreen();
+                console.error("Auto login validation failed", err);
+                // Network failure should not throw the teacher back to login when a valid cached workspace exists.
+                if (userProfile && String(userProfile.email).toLowerCase() === String(email).toLowerCase()) {
+                    hideBootScreen();
+                    setDataSyncStatus('Offline · cache only', 'offline');
+                    hideDataLoading();
+                    return;
+                }
+                completeBootToLogin();
             }
         }
 
@@ -4260,15 +2247,33 @@
             }
         });
 
-        function authorizeUser(profile) {
+        function authorizeUser(profile, options = {}) {
+            const nextCacheKey = getAssessmentCacheKey(profile);
+            const sessionChanged = currentSessionCacheKey !== nextCacheKey;
             userProfile = profile;
-            
+
+            if (sessionChanged) {
+                if (unsubscribeAssessments) {
+                    unsubscribeAssessments();
+                    unsubscribeAssessments = null;
+                }
+                currentSessionCacheKey = nextCacheKey;
+                uiStateRestored = false;
+                assessmentServerSyncReceived = false;
+                allAssessmentsData = [];
+                accessibleAssessmentsData = [];
+                filteredAssessmentsData = [];
+                selectedAssessmentIds.clear();
+                comparisonSelectedGroups.clear();
+            }
+
+            cacheProfile(profile);
+            hideBootScreen();
+            hideDataLoading();
             document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('sidebar').classList.remove('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
-            }, 300);
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
 
             document.getElementById('user-display-email').textContent = userProfile.email;
             document.getElementById('user-display-role').textContent = userProfile.role === 'admin' ? 'Administrator' : buildTeacherAccessDisplay(userProfile);
@@ -4280,43 +2285,64 @@
                 document.getElementById('btn-users-tab').classList.add('hidden');
             }
 
-            switchTab('dashboard-tab');
-            initDataSubscription();
+            const restoredTab = getStoredLastTab(userProfile.email);
+            switchTab(restoredTab, { persist: false });
+
+            if (sessionChanged && !assessmentServerSyncReceived && accessibleAssessmentsData.length === 0) {
+                showDataLoading('Preparing your assessment workspace...', 'Loading your saved local copy first, then syncing changes in the background.');
+            }
+
+            if (activeUser) {
+                initDataSubscription();
+            } else {
+                pendingDataSubscription = true;
+                setDataSyncStatus('Restoring session…', 'syncing');
+            }
         }
 
         window.logout = async () => {
-            localStorage.removeItem('grace_session_email');
-            localStorage.removeItem('grace_session_pass');
+            captureUIState();
+            safeLocalStorageRemove('grace_session_email');
+            safeLocalStorageRemove('grace_session_pass');
+            userProfile = null;
+            activeUser = null;
+            currentSessionCacheKey = '';
+            uiStateRestored = false;
             cleanupSubscriptions();
+            hideDataLoading();
             await signOut(auth);
         };
 
         function showLoginScreen() {
-            closeMobileSidebar();
+            hideBootScreen();
+            hideDataLoading();
             document.getElementById('sidebar').classList.add('hidden');
             document.getElementById('main-content').classList.add('hidden');
             const loginScreen = document.getElementById('login-screen');
             loginScreen.classList.remove('hidden');
-            setTimeout(() => {
-                loginScreen.classList.remove('opacity-0', 'pointer-events-none');
-            }, 50);
-            
+            requestAnimationFrame(() => loginScreen.classList.remove('opacity-0', 'pointer-events-none'));
+
             const btn = document.getElementById('login-btn');
             btn.disabled = false;
             btn.innerHTML = '<span>Sign In</span> <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>';
             document.getElementById('login-email').value = '';
             document.getElementById('login-password').value = '';
+            setDataSyncStatus('Ready', 'ready');
         }
 
         function cleanupSubscriptions() {
             if(unsubscribeAssessments) unsubscribeAssessments();
+            unsubscribeAssessments = null;
+            pendingDataSubscription = false;
             allAssessmentsData = [];
             accessibleAssessmentsData = [];
             filteredAssessmentsData = [];
             selectedAssessmentIds.clear();
             comparisonSelectedGroups.clear();
-            if(dashboardChartInstance) dashboardChartInstance.destroy();
-            if(comparisonChartInstance) comparisonChartInstance.destroy();
+            clearTimeout(dataFilterRenderTimer);
+            assessmentServerSyncReceived = false;
+            if(dashboardChartInstance) { dashboardChartInstance.destroy(); dashboardChartInstance = null; }
+            if(comparisonChartInstance) { comparisonChartInstance.destroy(); comparisonChartInstance = null; }
             updateBatchToolbar();
             renderAIPrioritySummary();
             renderAIPriorityTargets();
@@ -4325,27 +2351,88 @@
         }
 
         function initDataSubscription() {
-            if (unsubscribeAssessments) unsubscribeAssessments();
-            
+            if (!userProfile || !db || !activeUser) {
+                pendingDataSubscription = true;
+                return;
+            }
+            pendingDataSubscription = false;
+            if (unsubscribeAssessments) return;
+
+            showDataLoading('Syncing assessment data...', 'The local cache is displayed first; Firebase now reconciles changes in the background.');
+            setDataSyncStatus('Syncing…', 'syncing');
+
             const recordsCol = collection(db, 'artifacts', appId, 'public', 'data', 'assessments');
-            unsubscribeAssessments = onSnapshot(recordsCol, (snapshot) => {
-                allAssessmentsData = [];
-                snapshot.forEach(doc => {
-                    allAssessmentsData.push({ id: doc.id, ...doc.data() });
-                });
-                
-                refreshAccessibleData();
-                populateSchoolYearFilters();
-                populateGlobalSubjectFilters();
-                filterAndRenderData();
-                populateAISelects();
-                updateDashFilterValues();
-                updateDashboardSummary();
-                updateComparisonControls();
-                if (userProfile?.role === 'admin') {
-                    refreshTeacherAccessChecklists();
+            unsubscribeAssessments = onSnapshot(recordsCol, { includeMetadataChanges: true }, (snapshot) => {
+                const fromCache = Boolean(snapshot.metadata?.fromCache);
+                const next = [];
+                snapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
+
+                // Firestore persistent cache may have an empty first snapshot while our
+                // application-level IndexedDB cache already contains usable records. Do not
+                // let that transient empty snapshot wipe the locally restored workspace.
+                if (fromCache && next.length === 0 && allAssessmentsData.length > 0) {
+                    refreshAccessibleData();
+                    hideDataLoading();
+                    setDataSyncStatus('Local cache · syncing', 'cached');
+                    return;
+                }
+
+                allAssessmentsData = next;
+
+                // A Firestore cache snapshot is useful for instant rendering, but it is not
+                // proof that the server has been reached. Keep the first-load screen alive
+                // when that cache is empty until server data arrives.
+                if (!fromCache) {
+                    assessmentServerSyncReceived = true;
+                    lastDataSnapshotAt = Date.now();
+                }
+
+                refreshAssessmentViews();
+                if (next.length > 0 || !fromCache) hideDataLoading();
+                if (fromCache) {
+                    setDataSyncStatus(next.length ? 'Local sync' : 'Waiting for Firebase…', 'cached');
+                } else {
+                    scheduleAssessmentCacheWrite();
+                    setDataSyncStatus('Synced', 'synced');
+                }
+            }, (error) => {
+                console.error('Assessment subscription failed', error);
+                hideDataLoading();
+                if (Array.isArray(accessibleAssessmentsData) && accessibleAssessmentsData.length) {
+                    setDataSyncStatus('Offline · cache only', 'offline');
+                } else {
+                    setDataSyncStatus('Data unavailable', 'offline');
                 }
             });
+
+            // Safety-net for browsers/environments where the realtime listener takes too long
+            // to deliver its first snapshot. Only runs when no server snapshot has arrived yet,
+            // so normal operation does not perform a second full read.
+            setTimeout(async () => {
+                if (assessmentServerSyncReceived || !userProfile || !activeUser || !unsubscribeAssessments) return;
+                try {
+                    const fallbackSnapshot = await getDocsFromServer(recordsCol);
+                    if (assessmentServerSyncReceived) return;
+                    const next = [];
+                    fallbackSnapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
+                    allAssessmentsData = next;
+                    assessmentServerSyncReceived = true;
+                    lastDataSnapshotAt = Date.now();
+                    refreshAssessmentViews();
+                    scheduleAssessmentCacheWrite();
+                    hideDataLoading();
+                    setDataSyncStatus('Synced', 'synced');
+                } catch (fallbackError) {
+                    console.warn('Assessment fallback read failed', fallbackError);
+                    if (Array.isArray(accessibleAssessmentsData) && accessibleAssessmentsData.length) {
+                        hideDataLoading();
+                        setDataSyncStatus('Offline · cache only', 'offline');
+                    } else {
+                        hideDataLoading();
+                        setDataSyncStatus('Data unavailable', 'offline');
+                    }
+                }
+            }, 5000);
         }
 
         function refreshAccessibleData() {
@@ -4365,20 +2452,36 @@
             return String(document.getElementById('student-search')?.value || '').trim().toLowerCase();
         }
 
-        function filterAndRenderData() {
+        function filterAndRenderData(options = {}) {
+            const immediate = Boolean(options.immediate);
+            if (!immediate) {
+                clearTimeout(dataFilterRenderTimer);
+                dataFilterRenderTimer = setTimeout(() => filterAndRenderData({ immediate: true }), 90);
+                return;
+            }
+
             const search = getStudentSearchTerm();
             const selectedSchoolYear = normalizeFilterValue(getSelectedSchoolYear());
-            filteredAssessmentsData = accessibleAssessmentsData.filter(r => {
+            const source = Array.isArray(accessibleAssessmentsData) ? accessibleAssessmentsData : [];
+            const nextFiltered = [];
+
+            for (let i = 0; i < source.length; i++) {
+                const r = source[i];
                 const recordSchoolYear = normalizeFilterValue(getRecordSchoolYear(r));
-                if (selectedSchoolYear && recordSchoolYear !== selectedSchoolYear) return false;
-                if (!search) return true;
-                const fullName = [r.lastName || '', r.firstName || '', r.middleName || '']
-                    .join(' ')
-                    .replace(/\s+/g, ' ')
-                    .trim()
-                    .toLowerCase();
-                return fullName.includes(search);
-            });
+                if (selectedSchoolYear && recordSchoolYear !== selectedSchoolYear) continue;
+
+                if (search) {
+                    const fullName = [r.lastName || '', r.firstName || '', r.middleName || '']
+                        .join(' ')
+                        .replace(/\s+/g, ' ')
+                        .trim()
+                        .toLowerCase();
+                    if (!fullName.includes(search)) continue;
+                }
+                nextFiltered.push(r);
+            }
+
+            filteredAssessmentsData = nextFiltered;
 
             const visibleIds = new Set(filteredAssessmentsData.map(r => r.id));
             selectedAssessmentIds = new Set(Array.from(selectedAssessmentIds).filter(id => visibleIds.has(id)));
@@ -4391,10 +2494,11 @@
         window.clearStudentSearch = () => {
             const input = document.getElementById('student-search');
             if (input) input.value = '';
-            filterAndRenderData();
+            filterAndRenderData({ immediate: true });
+            captureUIState();
         };
 
-        // Responsive navigation helpers: UI-only, no changes to application data logic.
+        // Restored responsive navigation controls. UI-only; assessment/Firebase logic is unchanged.
         let sidebarPinned = false;
 
         function applySidebarPreference() {
@@ -4427,7 +2531,7 @@
             document.body.classList.toggle('mobile-nav-open', open);
         };
 
-        window.closeMobileSidebar = () => {
+        function closeMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('mobile-sidebar-backdrop');
             if (sidebar) sidebar.classList.remove('sidebar-mobile-open');
@@ -4436,7 +2540,11 @@
                 backdrop.setAttribute('aria-hidden', 'true');
             }
             document.body.classList.remove('mobile-nav-open');
-        };
+        }
+
+        // Expose the declaration for inline HTML onclick handlers while also keeping
+        // a hoisted local function so cached-session startup can safely call it.
+        window.closeMobileSidebar = closeMobileSidebar;
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') closeMobileSidebar();
@@ -4448,7 +2556,7 @@
 
         applySidebarPreference();
 
-        window.switchTab = (tabId) => {
+        function switchTab(tabId, options = {}) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('#sidebar button').forEach(el => {
                 el.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/20');
@@ -4469,6 +2577,7 @@
                 'users-tab': 'System Users'
             };
             document.getElementById('page-title').textContent = titles[tabId];
+            if (options.persist !== false && userProfile?.email) captureUIState();
             
             // Contextual Header Actions based on Role/Tab
             const importBtn = document.getElementById('btn-import-csv');
@@ -4494,7 +2603,12 @@
             }
 
             closeMobileSidebar();
-        };
+        }
+
+        // Expose navigation globally for inline HTML onclick handlers.
+        // The function declaration is hoisted so cached-session bootstrap can call it safely
+        // even before this section of the module has executed.
+        window.switchTab = switchTab;
 
         window.showToast = (msg, type = "success") => {
             const toast = document.getElementById('toast');
@@ -4745,7 +2859,7 @@
             syncSchoolYearFilters();
 
             populateGlobalSubjectFilters();
-            filterAndRenderData();
+            filterAndRenderData({ immediate: true });
             updateDashboardFilterContext();
             updateDashboardSummary();
             updateDashFilterValues();
@@ -4753,6 +2867,7 @@
             populateAISelects();
             updateAICurriculumContext();
             renderAISelectedTargetPreview();
+            captureUIState();
         };
 
         window.handleDashboardSubjectFilterChange = () => {
@@ -4761,6 +2876,7 @@
             updateDashboardSummary();
             updateDashFilterValues();
             updateComparisonControls();
+            captureUIState();
         };
 
         window.handleDashboardCompetencyFilterChange = () => {
@@ -4772,6 +2888,7 @@
             updateDashFilterValues();
             updateComparisonControls();
             renderDashboardChart();
+            captureUIState();
         };
 
         window.handleDashboardChartCompetencyChange = () => {
@@ -4783,6 +2900,7 @@
             updateDashFilterValues();
             updateComparisonControls();
             renderDashboardChart();
+            captureUIState();
         };
 
         window.handleAISubjectFilterChange = () => {
@@ -4791,6 +2909,7 @@
             syncAICompetencyFilter();
             populateAISelects();
             updateAICurriculumContext();
+            captureUIState();
         };
 
         window.handleAICompetencyFilterChange = () => {
@@ -4799,6 +2918,7 @@
             populateAISelects();
             updateAICurriculumContext();
             renderAISelectedTargetPreview();
+            captureUIState();
         };
 
         function updateDashboardSummary() {
@@ -5365,6 +3485,7 @@
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'assessments'), newEntry);
                 e.target.reset();
                 showToast("Record successfully added.");
+                scheduleAssessmentCacheWrite();
             } catch (err) {
                 console.error(err);
                 showToast("Failed to save record.", "error");
@@ -5379,6 +3500,7 @@
             try {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'assessments', id));
                 showToast("Record deleted.");
+                scheduleAssessmentCacheWrite();
             } catch (err) {
                 console.error(err);
                 showToast("Failed to delete record.", "error");
@@ -5431,6 +3553,7 @@
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'assessments', id), updatedData);
                 document.getElementById('edit-modal').classList.add('hidden');
                 showToast("Record updated.");
+                scheduleAssessmentCacheWrite();
             } catch (err) {
                 console.error(err);
                 showToast("Failed to update.", "error");
@@ -5496,6 +3619,8 @@
             }
 
             tbody.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            const renderToken = ++dataRenderSequence;
             filteredAssessmentsData.forEach(record => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition-colors group border-b border-slate-50";
@@ -5541,8 +3666,9 @@
                         </button>
                     </td>
                 `;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+            if (renderToken === dataRenderSequence) tbody.appendChild(fragment);
 
             updateSortIcons();
             updateSelectAllState();
@@ -5748,6 +3874,7 @@
                 }
 
                 closeBatchEditModal();
+                scheduleAssessmentCacheWrite();
                 selectedAssessmentIds.clear();
                 updateBatchToolbar();
                 showToast(`Updated ${editableSelected.length} records successfully.`);
@@ -5785,6 +3912,7 @@
                     await batch.commit();
                 }
 
+                scheduleAssessmentCacheWrite();
                 selectedAssessmentIds.clear();
                 updateBatchToolbar();
                 showToast(`Deleted ${editableSelected.length} records successfully.`);
@@ -5915,6 +4043,7 @@
                     });
                     await batch.commit();
                 }
+                scheduleAssessmentCacheWrite();
                 selectedAssessmentIds.clear();
                 updateBatchToolbar();
                 showToast(`Deleted ${filteredAssessmentsData.length} records successfully.`);
@@ -6836,7 +4965,6 @@ Additional formatting requirements for Gemini:
         };
 
         // User Management — multi-grade / multi-section access control
-        const STANDARD_GRADE_OPTIONS = ['Kindergarten', ...Array.from({ length: 12 }, (_, i) => String(i + 1))];
 
         function normalizeAccessArray(value) {
             if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
@@ -6953,9 +5081,19 @@ Additional formatting requirements for Gemini:
         async function renderUsersTable() {
             if (!userProfile || userProfile.role !== 'admin') return;
             const tbody = document.getElementById('users-table-body');
+            if (!tbody) return;
+
+            // Cached-session restoration can run before Firebase has finished creating
+            // the Firestore instance. Never call collection() with an undefined db.
+            if (!db) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-400"><i class="fa-solid fa-cloud-arrow-down mr-2"></i>Connecting to Firebase…</td></tr>';
+                return;
+            }
+
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
             try {
-                const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'profiles'));
+                const profilesCol = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
+                const snap = await getDocs(profilesCol);
                 tbody.innerHTML = '';
                 const profiles = []; snap.forEach(d => profiles.push({ id: d.id, ...d.data() }));
                 profiles.sort((a,b) => String(a.email||'').localeCompare(String(b.email||'')));
@@ -7011,11 +5149,22 @@ Additional formatting requirements for Gemini:
             catch (err) { console.error(err); showToast('Failed to remove user.', 'error'); }
         };
 
+        window.addEventListener('pagehide', captureUIState);
+        window.addEventListener('beforeunload', captureUIState);
+        document.getElementById('student-search')?.addEventListener('input', () => {
+            clearTimeout(window.__graceSearchStateTimer);
+            window.__graceSearchStateTimer = setTimeout(captureUIState, 120);
+        });
+
         const inputSchoolYear = document.getElementById('input-school-year');
         if (inputSchoolYear) inputSchoolYear.value = DEFAULT_SCHOOL_YEAR;
         refreshTeacherAccessChecklists();
         updateAccessChecklistCounts();
         handleAIProviderChange();
+
+        // If a cached session was restored before Firebase finished initializing, the app is already visible.
+        // The background authentication/data subscription will reconcile the state without returning to login.
+        if (!userProfile && !hadSavedSession) hideBootScreen();
     </script>
 </body>
 </html>
