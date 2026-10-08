@@ -1419,7 +1419,7 @@
             <div class="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100 mb-4">
                 <p class="text-xs text-indigo-900 font-semibold mb-1">CSV Format:</p>
                 <code class="block text-[11px] text-indigo-950 font-mono bg-white p-2 border border-indigo-100 rounded-xl">LastName,FirstName,MiddleName,SchoolYear,Grade,Section,Subject,Competency,TestType,Score</code>
-                <p class="text-[10px] text-indigo-700 mt-2">Existing 9-column CSV files are still supported; they will use the selected universal School Year.</p>
+                <p class="text-[10px] text-indigo-700 mt-2">Supports the current 10-column format plus legacy 9-column files, including exports with <strong>LastName, FirstName, Middle Initial, Grade, Section, Subject, Competency, Score, Level</strong>. Quoted competency statements and commas inside competency text are parsed correctly.</p>
             </div>
             
             <div id="import-dropzone" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50/80 transition-colors cursor-pointer relative group">
@@ -1439,6 +1439,8 @@
                 </div>
                 <p class="text-[10px] text-slate-500 mt-2 text-center">Batch importing large files. Please wait.</p>
             </div>
+
+            <div id="import-integrity-summary" class="hidden mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[10px] leading-relaxed text-slate-600"></div>
 
             <div id="import-btn-group" class="mt-6 flex justify-end gap-2">
                 <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="px-4 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-semibold transition-all">Cancel</button>
@@ -1975,7 +1977,7 @@
             const cached = await readAssessmentCache(profile);
             if (assessmentServerSyncReceived || userProfile?.email !== profile.email) return false;
             if (!cached || !Array.isArray(cached.data)) return false;
-            allAssessmentsData = cached.data;
+            allAssessmentsData = normalizeAssessmentRecords(cached.data);
             refreshAssessmentViews();
             uiStateRestored = true;
             hideDataLoading();
@@ -2377,7 +2379,7 @@
                     return;
                 }
 
-                allAssessmentsData = next;
+                allAssessmentsData = normalizeAssessmentRecords(next);
 
                 // A Firestore cache snapshot is useful for instant rendering, but it is not
                 // proof that the server has been reached. Keep the first-load screen alive
@@ -2415,7 +2417,7 @@
                     if (assessmentServerSyncReceived) return;
                     const next = [];
                     fallbackSnapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
-                    allAssessmentsData = next;
+                    allAssessmentsData = normalizeAssessmentRecords(next);
                     assessmentServerSyncReceived = true;
                     lastDataSnapshotAt = Date.now();
                     refreshAssessmentViews();
@@ -2641,12 +2643,234 @@
         }
 
         // Dashboard & Dynamic Chart Logic
+        // CSV/data-integrity helpers. These functions deliberately preserve competency
+        // statements while removing parser artifacts such as wrapper quotes and BOMs.
+        function cleanImportedCell(value) {
+            let text = String(value ?? '').replace(/^\uFEFF/, '').replace(/\u00A0/g, ' ').trim();
+            if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) {
+                text = text.slice(1, -1).replace(/""/g, '"').trim();
+            } else if (text.startsWith('"') && !text.endsWith('"')) {
+                // Defensive repair for files previously produced by the old comma-splitter.
+                text = text.slice(1).trim();
+            } else if (text.endsWith('"') && !text.startsWith('"')) {
+                text = text.slice(0, -1).trim();
+            }
+            return text;
+        }
+
+        function normalizeComparableText(value) {
+            return cleanImportedCell(value)
+                .normalize('NFKC')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+        }
+
+        function sanitizeCompetencyText(value) {
+            return cleanImportedCell(value);
+        }
+
+        function sanitizeAssessmentRecord(record) {
+            const source = record && typeof record === 'object' ? record : {};
+            const cleaned = { ...source };
+            cleaned.schoolYear = cleanImportedCell(source.schoolYear);
+            cleaned.lastName = cleanImportedCell(source.lastName);
+            cleaned.firstName = cleanImportedCell(source.firstName);
+            cleaned.middleName = cleanImportedCell(source.middleName);
+            cleaned.grade = cleanImportedCell(source.grade);
+            cleaned.section = cleanImportedCell(source.section);
+            cleaned.subject = cleanImportedCell(source.subject);
+            cleaned.competency = sanitizeCompetencyText(source.competency);
+            cleaned.testType = cleanImportedCell(source.testType) || 'Pre-Test';
+            const numericScore = Number(source.score);
+            cleaned.score = Number.isFinite(numericScore) ? Math.min(100, Math.max(0, numericScore)) : source.score;
+            return cleaned;
+        }
+
+        function normalizeAssessmentRecords(data) {
+            return (Array.isArray(data) ? data : []).map(sanitizeAssessmentRecord);
+        }
+
+        function getAssessmentUniquenessKey(record) {
+            const r = sanitizeAssessmentRecord(record);
+            return [
+                r.schoolYear,
+                r.lastName,
+                r.firstName,
+                r.middleName,
+                r.grade,
+                r.section,
+                r.subject,
+                r.competency,
+                r.testType,
+                Number.isFinite(Number(r.score)) ? Number(r.score).toFixed(4) : String(r.score ?? '')
+            ].map(normalizeComparableText).join('||');
+        }
+
+        function parseCSVText(text) {
+            const input = String(text ?? '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < input.length; i++) {
+                const ch = input[i];
+                if (inQuotes) {
+                    if (ch === '"') {
+                        if (input[i + 1] === '"') {
+                            field += '"';
+                            i++;
+                        } else {
+                            inQuotes = false;
+                        }
+                    } else {
+                        field += ch;
+                    }
+                } else if (ch === '"' && field.length === 0) {
+                    inQuotes = true;
+                } else if (ch === ',') {
+                    row.push(field);
+                    field = '';
+                } else if (ch === '\n') {
+                    row.push(field);
+                    if (row.some(cell => String(cell ?? '').trim() !== '')) rows.push(row);
+                    row = [];
+                    field = '';
+                } else {
+                    field += ch;
+                }
+            }
+
+            row.push(field);
+            if (row.some(cell => String(cell ?? '').trim() !== '')) rows.push(row);
+            return rows.map(cells => cells.map(cleanImportedCell));
+        }
+
+        function normalizeCSVHeader(value) {
+            return normalizeComparableText(value).replace(/[^a-z0-9]+/g, '');
+        }
+
+        function buildCSVColumnMap(headers) {
+            const normalized = headers.map(normalizeCSVHeader);
+            const find = (...aliases) => {
+                for (const alias of aliases) {
+                    const idx = normalized.indexOf(normalizeCSVHeader(alias));
+                    if (idx >= 0) return idx;
+                }
+                return -1;
+            };
+            return {
+                lastName: find('LastName', 'Last Name', 'Surname'),
+                firstName: find('FirstName', 'First Name', 'Given Name'),
+                middleName: find('MiddleName', 'Middle Name', 'Middle Initial', 'MiddleInitial', 'MI'),
+                schoolYear: find('SchoolYear', 'School Year', 'SY', 'Year'),
+                grade: find('Grade', 'Grade Level', 'GradeLevel'),
+                section: find('Section', 'Class', 'Class Section'),
+                subject: find('Subject', 'Learning Area', 'LearningArea'),
+                competency: find('Competency', 'Competency Statement', 'CompetencyStatement', 'Learning Competency', 'LearningCompetency'),
+                testType: find('TestType', 'Test Type', 'Assessment Type', 'AssessmentType'),
+                score: find('Score', 'Score (%)', 'Score Percent', 'Percentage', 'Percent'),
+                level: find('Level', 'Proficiency Level', 'ProficiencyLevel')
+            };
+        }
+
+        function parseImportedAssessmentRows(csvText) {
+            const rows = parseCSVText(csvText);
+            if (rows.length < 2) return { records: [], stats: { totalRows: 0, validRows: 0, invalidRows: 0, duplicateRows: 0, cleanedCompetencies: 0, uniqueCompetencies: 0, header: [] } };
+
+            const header = rows[0];
+            const map = buildCSVColumnMap(header);
+            const headerLooksValid = map.lastName >= 0 && map.firstName >= 0 && map.subject >= 0 && map.competency >= 0 && map.score >= 0;
+
+            const useLegacy9 = !headerLooksValid && rows[0].length >= 9;
+            const records = [];
+            const seen = new Set();
+            const competencyKeys = new Map();
+            let invalidRows = 0;
+            let duplicateRows = 0;
+            let cleanedCompetencies = 0;
+
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i];
+                const valueAt = index => index >= 0 ? cols[index] : '';
+                let rawRecord;
+
+                if (useLegacy9) {
+                    const hasLegacyLevel = cols.length >= 9 && Number.isFinite(Number(cols[7])) && !Number.isFinite(Number(cols[8]));
+                    rawRecord = {
+                        lastName: cols[0],
+                        firstName: cols[1],
+                        middleName: cols[2],
+                        schoolYear: getDefaultSchoolYearForEntry(),
+                        grade: cols[3],
+                        section: cols[4],
+                        subject: cols[5],
+                        competency: cols[6],
+                        testType: hasLegacyLevel ? 'Pre-Test' : (cols[7] || 'Pre-Test'),
+                        score: hasLegacyLevel ? cols[8] : cols[8]
+                    };
+                } else {
+                    rawRecord = {
+                        lastName: valueAt(map.lastName),
+                        firstName: valueAt(map.firstName),
+                        middleName: valueAt(map.middleName),
+                        schoolYear: map.schoolYear >= 0 ? (valueAt(map.schoolYear) || getDefaultSchoolYearForEntry()) : getDefaultSchoolYearForEntry(),
+                        grade: valueAt(map.grade),
+                        section: valueAt(map.section),
+                        subject: valueAt(map.subject),
+                        competency: valueAt(map.competency),
+                        testType: map.testType >= 0 ? (valueAt(map.testType) || 'Pre-Test') : 'Pre-Test',
+                        score: valueAt(map.score)
+                    };
+                }
+
+                const record = sanitizeAssessmentRecord(rawRecord);
+                const rawCompetency = cleanImportedCell(rawRecord.competency);
+                if (rawCompetency !== record.competency || String(rawRecord.competency ?? '').trim() !== record.competency) cleanedCompetencies++;
+
+                const score = Number(record.score);
+                const required = [record.lastName, record.firstName, record.grade, record.section, record.subject, record.competency];
+                if (required.some(v => !String(v ?? '').trim()) || !Number.isFinite(score) || score < 0 || score > 100) {
+                    invalidRows++;
+                    continue;
+                }
+
+                const key = getAssessmentUniquenessKey(record);
+                if (seen.has(key)) {
+                    duplicateRows++;
+                    continue;
+                }
+                seen.add(key);
+                records.push(record);
+                const competencyKey = normalizeComparableText(record.competency);
+                if (competencyKey && !competencyKeys.has(competencyKey)) competencyKeys.set(competencyKey, record.competency);
+            }
+
+            return {
+                records,
+                stats: {
+                    totalRows: Math.max(0, rows.length - 1),
+                    validRows: records.length,
+                    invalidRows,
+                    duplicateRows,
+                    cleanedCompetencies,
+                    uniqueCompetencies: competencyKeys.size,
+                    header
+                }
+            };
+        }
+
         function getUniqueValues(data, field) {
-            return Array.from(new Set(
-                data.map(r => field === 'testType' ? (r.testType || 'Pre-Test') : r[field])
-                    .filter(v => v !== undefined && v !== null && String(v).trim() !== '')
-                    .map(v => String(v).trim())
-            )).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+            const map = new Map();
+            (Array.isArray(data) ? data : []).forEach(record => {
+                const raw = field === 'testType' ? (record.testType || 'Pre-Test') : record[field];
+                const label = field === 'competency' ? sanitizeCompetencyText(raw) : cleanImportedCell(raw);
+                const key = normalizeComparableText(label);
+                if (!key) return;
+                if (!map.has(key)) map.set(key, label);
+            });
+            return Array.from(map.values()).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
         }
 
         function addSelectOptions(selectId, values, allLabel = 'All') {
@@ -3922,101 +4146,132 @@
             }
         };
 
-        // NEW Feature 3: Optimized Chunked Batch Import & Progress Bar
+        // Robust CSV import with RFC-4180 style parsing, integrity validation, duplicate prevention,
+        // competency cleanup, and support for both the current 10-column format and legacy 9-column exports.
         window.processCSV = () => {
             const fileInput = document.getElementById('csv-file');
-            if(!fileInput.files.length) {
+            if (!fileInput?.files?.length) {
                 showToast("Please select a CSV file.", "error");
                 return;
             }
-            
+            if (!db) {
+                showToast("Firebase is still connecting. Please try the import again in a moment.", "error");
+                return;
+            }
+            if (!userProfile) {
+                showToast("Your session is not ready yet. Please sign in again.", "error");
+                return;
+            }
+
             const file = fileInput.files[0];
             const reader = new FileReader();
-            
+
             reader.onload = async (e) => {
-                const text = e.target.result;
-                const rows = text.split('\n').map(row => row.trim()).filter(row => row);
-                
-                if(rows.length < 2) {
-                    showToast("CSV is empty or invalid.", "error");
-                    return;
-                }
+                try {
+                    const parsed = parseImportedAssessmentRows(e.target.result);
+                    const stats = parsed.stats;
+                    if (!parsed.records.length) {
+                        showToast("No valid assessment records were found in the CSV.", "error");
+                        return;
+                    }
 
-                document.getElementById('import-btn-group').classList.add('hidden');
-                document.getElementById('import-dropzone').classList.add('hidden');
-                document.getElementById('import-progress-container').classList.remove('hidden');
-                
-                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'assessments');
-                
-                // Firestore writes are limited to 500 per batch.
-                const chunkSize = 400; 
-                let chunks = [];
-                for(let i = 1; i < rows.length; i += chunkSize) {
-                    chunks.push(rows.slice(i, i + chunkSize));
-                }
+                    document.getElementById('import-btn-group').classList.add('hidden');
+                    document.getElementById('import-dropzone').classList.add('hidden');
+                    document.getElementById('import-progress-container').classList.remove('hidden');
+                    const integrityBox = document.getElementById('import-integrity-summary');
+                    if (integrityBox) {
+                        integrityBox.classList.remove('hidden');
+                        integrityBox.innerHTML = `<div class="font-bold text-slate-800 mb-1">CSV integrity check</div><div>Parsed <strong>${stats.totalRows.toLocaleString()}</strong> rows · Valid <strong>${stats.validRows.toLocaleString()}</strong> · File duplicates skipped <strong>${stats.duplicateRows.toLocaleString()}</strong> · Invalid rows skipped <strong>${stats.invalidRows.toLocaleString()}</strong> · Unique competencies <strong>${stats.uniqueCompetencies.toLocaleString()}</strong>${stats.cleanedCompetencies ? ` · Cleaned competency formatting <strong>${stats.cleanedCompetencies.toLocaleString()}</strong>` : ''}</div>`;
+                    }
 
-                let addedCount = 0;
-                
-                for(let i = 0; i < chunks.length; i++) {
-                    const batch = writeBatch(db);
-                    chunks[i].forEach(rowStr => {
-                        const cols = rowStr.replace(/^\uFEFF/, '').split(',').map(c => c.trim());
-                        if(cols.length >= 9) {
-                            const hasSchoolYear = cols.length >= 10;
-                            const schoolYear = hasSchoolYear ? (cols[3] || getDefaultSchoolYearForEntry()) : getDefaultSchoolYearForEntry();
-                            const grade = hasSchoolYear ? cols[4] : cols[3];
-                            const section = hasSchoolYear ? cols[5] : cols[4];
-                            const subject = hasSchoolYear ? cols[6] : cols[5];
-                            const competency = hasSchoolYear ? cols[7] : cols[6];
-                            const testType = hasSchoolYear ? cols[8] : cols[7];
-                            const score = hasSchoolYear ? cols[9] : cols[8];
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'assessments');
+                    const existingKeys = new Set((Array.isArray(allAssessmentsData) ? allAssessmentsData : []).map(getAssessmentUniquenessKey));
+                    const importRecords = [];
+                    let existingDuplicateCount = 0;
+                    parsed.records.forEach(record => {
+                        const key = getAssessmentUniquenessKey(record);
+                        if (existingKeys.has(key)) {
+                            existingDuplicateCount++;
+                            return;
+                        }
+                        existingKeys.add(key);
+                        importRecords.push(record);
+                    });
 
+                    if (!importRecords.length) {
+                        document.getElementById('import-progress-bar').style.width = '100%';
+                        document.getElementById('import-progress-text').textContent = '100%';
+                        if (integrityBox) integrityBox.innerHTML += `<div class="mt-1 text-amber-700 font-semibold">All valid rows already exist in the current dataset; nothing new was written.</div>`;
+                        setTimeout(() => {
+                            document.getElementById('import-modal').classList.add('hidden');
+                            document.getElementById('import-btn-group').classList.remove('hidden');
+                            document.getElementById('import-dropzone').classList.remove('hidden');
+                            document.getElementById('import-progress-container').classList.add('hidden');
+                            document.getElementById('import-progress-bar').style.width = '0%';
+                            fileInput.value = '';
+                            document.getElementById('file-name-display').textContent = 'Click or drag CSV file here';
+                            showToast(`No new records imported. ${existingDuplicateCount.toLocaleString()} duplicate record(s) were already in the dataset.`);
+                        }, 700);
+                        return;
+                    }
+
+                    const chunkSize = 400;
+                    let addedCount = 0;
+                    const totalChunks = Math.ceil(importRecords.length / chunkSize);
+
+                    for (let start = 0; start < importRecords.length; start += chunkSize) {
+                        const chunk = importRecords.slice(start, start + chunkSize);
+                        const batch = writeBatch(db);
+                        chunk.forEach(record => {
                             const newRef = doc(colRef);
                             batch.set(newRef, {
-                                schoolYear,
-                                lastName: cols[0],
-                                firstName: cols[1],
-                                middleName: cols[2] || '',
-                                grade,
-                                section,
-                                subject,
-                                competency,
-                                testType,
-                                score: Number(score),
+                                schoolYear: record.schoolYear || getDefaultSchoolYearForEntry(),
+                                lastName: record.lastName,
+                                firstName: record.firstName,
+                                middleName: record.middleName || '',
+                                grade: record.grade,
+                                section: record.section,
+                                subject: record.subject,
+                                competency: record.competency,
+                                testType: record.testType || 'Pre-Test',
+                                score: Number(record.score),
                                 timestamp: Date.now(),
                                 addedBy: userProfile.email
                             });
-                            addedCount++;
-                        }
-                    });
-                    
-                    try {
+                        });
+
                         await batch.commit();
-                        let percent = Math.round(((i + 1) / chunks.length) * 100);
+                        addedCount += chunk.length;
+                        const percent = Math.round((addedCount / importRecords.length) * 100);
                         document.getElementById('import-progress-bar').style.width = percent + '%';
                         document.getElementById('import-progress-text').textContent = percent + '%';
-                    } catch(err) {
-                        console.error("Batch write failed", err);
                     }
-                }
-                
-                setTimeout(() => {
-                    document.getElementById('import-modal').classList.add('hidden');
-                    // Reset modal state
+
+                    scheduleAssessmentCacheWrite();
+                    if (integrityBox) integrityBox.innerHTML += `<div class="mt-1 text-emerald-700 font-semibold">Imported <strong>${addedCount.toLocaleString()}</strong> new record(s); existing duplicates skipped <strong>${existingDuplicateCount.toLocaleString()}</strong>.</div>`;
+
+                    setTimeout(() => {
+                        document.getElementById('import-modal').classList.add('hidden');
+                        document.getElementById('import-btn-group').classList.remove('hidden');
+                        document.getElementById('import-dropzone').classList.remove('hidden');
+                        document.getElementById('import-progress-container').classList.add('hidden');
+                        document.getElementById('import-progress-bar').style.width = '0%';
+                        fileInput.value = '';
+                        document.getElementById('file-name-display').textContent = 'Click or drag CSV file here';
+                        showToast(`Imported ${addedCount.toLocaleString()} records. Skipped ${existingDuplicateCount.toLocaleString()} existing duplicates and ${stats.duplicateRows.toLocaleString()} duplicate row(s) inside the file.`);
+                    }, 900);
+                } catch (err) {
+                    console.error("CSV import failed", err);
                     document.getElementById('import-btn-group').classList.remove('hidden');
                     document.getElementById('import-dropzone').classList.remove('hidden');
                     document.getElementById('import-progress-container').classList.add('hidden');
-                    document.getElementById('import-progress-bar').style.width = '0%';
-                    
-                    fileInput.value = '';
-                    document.getElementById('file-name-display').textContent = 'Click or drag CSV file here';
-                    showToast(`Successfully imported ${addedCount} records.`);
-                }, 800);
+                    showToast(`CSV import failed: ${err.message || 'Unknown error.'}`, "error");
+                }
             };
-            
+
             reader.readAsText(file);
         };
-        
+
         document.getElementById('csv-file').addEventListener('change', function(e) {
             if(e.target.files.length > 0) {
                 document.getElementById('file-name-display').textContent = e.target.files[0].name;
