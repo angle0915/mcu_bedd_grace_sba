@@ -567,6 +567,40 @@
         }
 
 
+
+        /* ===== v4: loading, comparison, mobile ===== */
+        #data-loading-screen .dl-retry{display:none}
+        #data-loading-screen.is-error .dl-retry{display:flex}
+        #data-loading-screen.is-error .dl-bar{display:none}
+        #sync-bar{position:absolute;left:0;right:0;top:0;height:3px;overflow:hidden;opacity:0;transition:opacity .2s;z-index:12;pointer-events:none}
+        #sync-bar.on{opacity:1}
+        #sync-bar::after{content:"";position:absolute;inset:0;width:40%;background:#6366f1;animation:syncbar 1.1s ease-in-out infinite}
+        @keyframes syncbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+        :focus-visible{outline:2px solid #6366f1;outline-offset:2px}
+        .cmp-chip.active{background:#4f46e5;color:#fff;border-color:#4f46e5}
+        #bottom-nav{display:none}
+        @media (max-width:767px){
+            #bottom-nav{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #e2e8f0;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+            #bottom-nav.hidden,#bottom-nav button.hidden{display:none}
+            #bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:12px;font-size:10px;font-weight:700;color:#64748b;min-height:50px}
+            #bottom-nav button i{font-size:1.05rem}
+            #bottom-nav button.active{background:#eef2ff;color:#4338ca}
+            .tab-content{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+            #toast{bottom:calc(76px + env(safe-area-inset-bottom))!important}
+            #dash-filters-body.collapsed{display:none}
+            #data-tab table,#data-tab tbody{display:block;min-width:0!important;width:100%}
+            #data-tab thead{display:none}
+            #data-table-body tr{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;margin:8px;padding:12px;border:1px solid #e2e8f0;border-radius:14px;background:#fff}
+            #data-table-body td{display:block;padding:0!important;text-align:left!important;min-width:0;width:auto!important}
+            #data-table-body td:nth-child(1){grid-row:1/span 2;align-self:center}
+            #data-table-body td:nth-child(2){grid-column:2;font-size:13px}
+            #data-table-body td:nth-child(3){display:none}
+            #data-table-body td:nth-child(n+4):nth-child(-n+8){grid-column:2;font-size:12px}
+            #data-table-body td:nth-child(9){grid-column:3;grid-row:1/span 2;align-self:center}
+            #data-table-body td[colspan]{grid-column:1/-1;text-align:center!important}
+            #data-table-body span.truncate{max-width:100%!important}
+        }
+        @media (min-width:768px){#dash-filters-toggle{display:none}}
     </style>
 </head>
 <body class="text-slate-800 h-screen flex overflow-hidden relative selection:bg-indigo-500 selection:text-white">
@@ -584,17 +618,17 @@
         </div>
     </div>
 
-    <div id="data-loading-screen" class="hidden fixed inset-0 bg-slate-950/45 backdrop-blur-sm z-[65] items-center justify-center p-5">
+    <div id="data-loading-screen" class="hidden fixed inset-0 bg-slate-950/45 backdrop-blur-sm z-[65] items-center justify-center p-5" role="status" aria-live="polite">
         <div class="w-full max-w-md rounded-3xl bg-white shadow-2xl border border-slate-200 p-6 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
-                <i class="fa-solid fa-database text-lg"></i>
-            </div>
-            <h2 class="text-base font-extrabold text-slate-900">Loading Assessment Data</h2>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4"><i id="data-loading-icon" class="fa-solid fa-database text-lg"></i></div>
+            <h2 id="data-loading-title" class="text-base font-extrabold text-slate-900">Loading Assessment Data</h2>
             <p id="data-loading-message" class="text-xs text-slate-500 mt-1.5">Preparing your assessment workspace...</p>
-            <div class="mt-5 h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div class="h-full w-1/3 rounded-full bg-indigo-600 animate-pulse"></div>
+            <div class="dl-bar mt-5 h-2 rounded-full bg-slate-100 overflow-hidden"><div class="h-full w-1/3 rounded-full bg-indigo-600 animate-pulse"></div></div>
+            <p id="data-loading-detail" class="text-[11px] text-slate-400 mt-3">This usually takes a few seconds.</p>
+            <div class="dl-retry mt-4 gap-2 justify-center">
+                <button type="button" onclick="retryDataLoad()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Try again</button>
+                <button type="button" onclick="dismissDataLoading()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">Continue anyway</button>
             </div>
-            <p id="data-loading-detail" class="text-[10px] text-slate-400 mt-3">First-time loading may take a little longer.</p>
         </div>
     </div>
 
@@ -684,6 +718,7 @@
     <div id="mobile-sidebar-backdrop" aria-hidden="true" onclick="window.closeMobileSidebar()"></div>
 
     <main id="main-content" class="flex-1 flex flex-col h-screen overflow-hidden relative hidden">
+        <div id="sync-bar"></div>
         
         <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-8 z-10 shadow-xs flex-shrink-0">
             <div class="flex items-center gap-3 min-w-0">
@@ -696,8 +731,8 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <span id="data-sync-status" class="data-sync-indicator hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-500">
-                    <i id="data-sync-status-icon" class="fa-solid fa-database text-[9px]"></i><span id="data-sync-status-text">Ready</span>
+                <span id="data-sync-status" class="data-sync-indicator inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-500">
+                    <i id="data-sync-status-icon" class="fa-solid fa-database text-[9px]"></i><span id="data-sync-status-text" class="hidden sm:inline">Ready</span>
                 </span>
                 <button id="btn-batch-delete" onclick="batchDeleteFiltered()" class="hidden px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-semibold transition-all border border-rose-200 shadow-xs items-center gap-2 active:scale-95">
                     <i class="fa-solid fa-trash-can"></i> Batch Delete View
@@ -720,9 +755,13 @@
                                 <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-book-open text-xs"></i></span>
                                 Dashboard Filters
                             </h2>
-                            <p class="text-xs text-slate-500 mt-1 max-w-3xl">Select a subject first, then optionally focus on one competency from that subject. All dashboard summaries, proficiency charts, and comparisons use the selected context.</p>
+                            <p class="hidden sm:block text-xs text-slate-500 mt-1 max-w-3xl">Select a subject first, then optionally focus on one competency from that subject. All dashboard summaries, proficiency charts, and comparisons use the selected context.</p>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:w-[780px]">
+                        <button type="button" id="dash-filters-toggle" onclick="toggleDashFilters()" class="flex items-center justify-between gap-3 w-full px-3.5 py-3 rounded-xl bg-indigo-50 border border-indigo-100 text-left">
+                            <span id="dash-filters-summary" class="text-xs font-semibold text-indigo-900 truncate">All School Years · All Subjects · All Competencies</span>
+                            <span class="text-[11px] font-bold text-indigo-600 flex-shrink-0"><i class="fa-solid fa-sliders mr-1"></i>Filters</span>
+                        </button>
+                        <div id="dash-filters-body" class="collapsed grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:w-[780px]">
                             <div>
                                 <label for="dashboard-school-year-filter" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">School Year</label>
                                 <select id="dashboard-school-year-filter" onchange="handleSchoolYearFilterChange(this.value)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
@@ -745,8 +784,15 @@
                     </div>
                 </div>
 
+                <div id="dash-empty" class="hidden bg-white rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+                    <i class="fa-regular fa-folder-open text-3xl text-slate-300"></i>
+                    <p class="font-bold text-slate-700 mt-3">No assessment records yet</p>
+                    <p class="text-xs text-slate-500 mt-1">Add an entry or import a CSV in Data Management to fill this dashboard.</p>
+                    <button type="button" onclick="switchTab('data-tab')" class="mt-4 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Go to Data Management</button>
+                </div>
+
                 <!-- Dashboard summary -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
                         <div class="flex items-center justify-between">
                             <div>
@@ -754,7 +800,7 @@
                                 <p id="dash-total-records" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
                                 <p id="dash-record-context" class="text-[11px] text-slate-500 mt-1">All subjects</p>
                             </div>
-                            <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <div class="hidden sm:flex w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                                 <i class="fa-solid fa-database"></i>
                             </div>
                         </div>
@@ -766,7 +812,7 @@
                                 <p id="dash-total-students" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
                                 <p class="text-[11px] text-slate-500 mt-1">Unique learners</p>
                             </div>
-                            <div class="w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+                            <div class="hidden sm:flex w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
                                 <i class="fa-solid fa-users"></i>
                             </div>
                         </div>
@@ -778,7 +824,7 @@
                                 <p id="dash-average-score" class="text-2xl font-extrabold text-slate-900 mt-1">0%</p>
                                 <p id="dash-score-context" class="text-[11px] text-slate-500 mt-1">All subjects</p>
                             </div>
-                            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <div class="hidden sm:flex w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                                 <i class="fa-solid fa-arrow-trend-up"></i>
                             </div>
                         </div>
@@ -790,7 +836,7 @@
                                 <p id="dash-intervention-rate" class="text-2xl font-extrabold text-slate-900 mt-1">0%</p>
                                 <p class="text-[11px] text-slate-500 mt-1">Beginning + Developing · scored records</p>
                             </div>
-                            <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                            <div class="hidden sm:flex w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                         </div>
@@ -851,122 +897,82 @@
                 </div>
 
                 <!-- Comprehensive multi-dimensional comparison -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
-                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
+                <div id="comparison-section" class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-200/80">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-column text-violet-600"></i> Multi-Dimensional Comparison
-                            </h2>
-                            <p class="text-xs text-slate-500 mt-1">
-                                Compare Grade Levels, Sections, Competencies, or Test Types side by side within the selected subject context.
-                            </p>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-chart-column text-violet-600"></i> Multi-Dimensional Comparison</h2>
+                            <p class="text-xs text-slate-500 mt-1">Compare grades, sections, competencies, subjects, school years or test types side by side.</p>
                         </div>
-                        <div class="flex items-center gap-2 text-[11px] text-slate-500 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                            <i class="fa-solid fa-circle-info text-indigo-500"></i>
-                            <span>Use filters to narrow the comparison, then select as many groups as needed.</span>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="exportComparisonCSV()" class="flex-1 lg:flex-none px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700"><i class="fa-solid fa-file-csv mr-1.5"></i>Export table</button>
+                            <button type="button" onclick="downloadComparisonChart()" class="flex-1 lg:flex-none px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700"><i class="fa-solid fa-image mr-1.5"></i>Save chart</button>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 mb-5">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Compare By</label>
+                    <div id="comparison-presets" class="flex gap-2 overflow-x-auto pb-2 mb-3"><button type="button" data-preset="grade" onclick="applyComparisonPreset('grade')" class="cmp-chip shrink-0 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:border-indigo-300">Grade ranking</button><button type="button" data-preset="section" onclick="applyComparisonPreset('section')" class="cmp-chip shrink-0 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:border-indigo-300">Section ranking</button><button type="button" data-preset="growth" onclick="applyComparisonPreset('growth')" class="cmp-chip shrink-0 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:border-indigo-300">Pre vs Post growth</button><button type="button" data-preset="competency" onclick="applyComparisonPreset('competency')" class="cmp-chip shrink-0 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:border-indigo-300">Competency gaps</button><button type="button" data-preset="mix" onclick="applyComparisonPreset('mix')" class="cmp-chip shrink-0 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:border-indigo-300">Proficiency mix</button></div>
+                    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 p-3 sm:p-4 rounded-2xl bg-slate-50 border border-slate-100 mb-3">
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Compare By</label>
                             <select id="comparison-dimension" onchange="updateComparisonControls()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
-                                <option value="grade">Grade Level</option>
-                                <option value="section">Section</option>
-                                <option value="competency">Competency</option>
-                                <option value="testType">Test Type</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Metric</label>
+                                <option value="grade">Grade Level</option><option value="section">Section</option><option value="competency">Competency</option><option value="subject">Subject</option><option value="schoolYear">School Year</option><option value="testType">Test Type</option>
+                            </select></div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Metric</label>
                             <select id="comparison-metric" onchange="renderComparisonChart()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
-                                <option value="average">Average Score</option>
-                                <option value="count">Record Count</option>
-                                <option value="proficiency">Proficiency Mix</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Chart</label>
+                                <option value="average">Average Score</option><option value="proficientRate">Proficient + Advanced %</option><option value="interventionRate">Needs Intervention %</option><option value="count">Record Count</option><option value="proficiencyPct">Proficiency Mix (%)</option><option value="proficiency">Proficiency Mix (count)</option>
+                            </select></div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Chart</label>
                             <select id="comparison-chart-type" onchange="renderComparisonChart()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
-                                <option value="bar">Bar Chart</option>
-                                <option value="doughnut">Doughnut / Pie</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Selected Groups</label>
-                            <div class="flex items-center justify-between gap-2 px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm">
-                                <span id="comparison-selection-summary" class="font-semibold text-slate-700 truncate">All groups</span>
-                                <div class="flex gap-1">
-                                    <button type="button" onclick="selectAllComparisonGroups()" class="px-2 py-1 text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg">All</button>
-                                    <button type="button" onclick="clearComparisonGroups()" class="px-2 py-1 text-[10px] font-bold text-slate-500 hover:bg-slate-100 rounded-lg">Clear</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Grade Filter</label>
-                            <select id="comparison-filter-grade" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700"></select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Section Filter</label>
-                            <select id="comparison-filter-section" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700"></select>
-                        </div>
-                        <div class="flex items-end">
-                            <div class="w-full rounded-xl bg-indigo-50/80 border border-indigo-100 px-3 py-2.5">
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Dashboard Context</p>
-                                <p id="comparison-subject-context" class="text-xs font-semibold text-indigo-900 mt-0.5">All Subjects · All Competencies</p>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Test Type Filter</label>
-                            <select id="comparison-filter-testType" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700"></select>
-                        </div>
+                                <option value="bar">Column</option><option value="horizontal">Horizontal bar</option><option value="line">Line</option><option value="radar">Radar</option><option value="doughnut">Doughnut</option>
+                            </select></div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Order By</label>
+                            <select id="comparison-sort" onchange="renderComparisonChart()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
+                                <option value="group">Name (A-Z)</option><option value="avgDesc">Highest average</option><option value="avgAsc">Lowest average</option><option value="countDesc">Most records</option>
+                            </select></div>
                     </div>
+                    <details id="comparison-filters" open class="mb-3 rounded-2xl border border-slate-100 bg-slate-50">
+                        <summary class="px-4 py-3 text-xs font-bold text-slate-700 cursor-pointer">More filters <span class="font-medium text-slate-400">(grade, section, test type)</span></summary>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 px-4 pb-4">
+                            <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Grade Filter</label><select id="comparison-filter-grade" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"></select></div>
+                            <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Section Filter</label><select id="comparison-filter-section" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"></select></div>
+                            <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Test Type Filter</label><select id="comparison-filter-testType" onchange="updateComparisonGroups()" class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"></select></div>
+                            <div class="flex items-end"><div class="w-full rounded-xl bg-indigo-50/80 border border-indigo-100 px-3 py-2.5"><p class="text-[10px] font-bold uppercase tracking-wider text-indigo-500">Dashboard Context</p><p id="comparison-subject-context" class="text-xs font-semibold text-indigo-900 mt-0.5">All Subjects</p></div></div>
+                        </div>
+                    </details>
+                    <div id="comparison-dimension-note" class="mb-4 px-4 py-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] font-medium text-slate-500 leading-relaxed"></div>
 
-                    <div id="comparison-dimension-note" class="mb-4 px-4 py-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px] font-medium text-slate-500 leading-relaxed">
-                        <i class="fa-solid fa-circle-info mr-1 text-indigo-500"></i> Compare grade levels using the same subject and current competency context.
-                    </div>
-
-                    <div class="grid grid-cols-1 xl:grid-cols-[320px,1fr] gap-5">
+                    <div class="grid grid-cols-1 xl:grid-cols-[300px,1fr] gap-5">
                         <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
-                            <div class="px-4 py-3 border-b border-slate-200/80 flex items-center justify-between">
-                                <div>
-                                    <p class="text-xs font-bold text-slate-800">Groups to Compare</p>
-                                    <p id="comparison-groups-helper" class="text-[10px] text-slate-400 mt-0.5">Choose the groups you want to compare.</p>
-                                </div>
+                            <div class="px-4 py-3 border-b border-slate-200/80 flex items-center justify-between gap-2">
+                                <div class="min-w-0"><p class="text-xs font-bold text-slate-800">Groups to Compare</p><p id="comparison-groups-helper" class="text-[10px] text-slate-400 mt-0.5">Choose the groups you want to compare.</p></div>
                                 <span id="comparison-group-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0</span>
                             </div>
-                            <div id="comparison-groups-list" class="max-h-[330px] overflow-y-auto p-3 space-y-1.5">
-                                <div class="text-xs text-slate-400 text-center py-8">Loading groups...</div>
+                            <div class="px-4 py-2 border-b border-slate-200/80 flex items-center justify-between">
+                                <span id="comparison-selection-summary" class="text-[11px] font-semibold text-slate-600">All groups</span>
+                                <div class="flex gap-1"><button type="button" onclick="selectAllComparisonGroups()" class="px-2.5 py-1.5 text-[11px] font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg">All</button><button type="button" onclick="clearComparisonGroups()" class="px-2.5 py-1.5 text-[11px] font-bold text-slate-500 hover:bg-slate-100 rounded-lg">Clear</button></div>
                             </div>
+                            <div id="comparison-groups-list" class="max-h-[250px] xl:max-h-[420px] overflow-y-auto p-3 space-y-1.5"><div class="text-xs text-slate-400 text-center py-8">Loading groups...</div></div>
                         </div>
-
                         <div class="min-w-0">
-                            <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-4">
-                                <div class="h-[330px] relative">
+                            <div id="comparison-insights" class="grid grid-cols-2 xl:grid-cols-4 gap-2 mb-3"></div>
+                            <div class="bg-slate-50/70 rounded-2xl border border-slate-100 p-3 sm:p-4">
+                                <div class="flex items-center justify-between mb-2"><p class="text-xs font-bold text-slate-700">Comparison chart</p>
+                                    <label class="flex items-center gap-2 text-[11px] font-semibold text-slate-600"><input type="checkbox" id="comparison-labels" checked onchange="renderComparisonChart()" class="w-4 h-4 accent-indigo-600">Value labels</label></div>
+                                <div id="comparison-chart-wrap" class="h-[300px] sm:h-[360px] relative">
                                     <canvas id="comparisonChart"></canvas>
-                                    <div id="comparison-chart-empty" class="hidden absolute inset-0 flex items-center justify-center text-center">
-                                        <div>
-                                            <i class="fa-regular fa-chart-bar text-3xl text-slate-300"></i>
-                                            <p class="text-xs font-semibold text-slate-400 mt-2">Select data groups to compare</p>
-                                        </div>
-                                    </div>
+                                    <div id="comparison-chart-empty" class="hidden absolute inset-0 flex items-center justify-center text-center"><div><i class="fa-regular fa-chart-bar text-3xl text-slate-300"></i><p class="text-xs font-semibold text-slate-400 mt-2">Select data groups to compare</p></div></div>
                                 </div>
+                                <div id="comparison-legend" class="flex flex-wrap gap-x-3 gap-y-1 mt-3 text-[10px] font-semibold text-slate-500"></div>
+                                <p id="comparison-chart-note" class="text-[11px] text-amber-600 mt-2"></p>
                             </div>
-
+                            <div id="growth-card" class="mt-4 rounded-2xl border border-slate-100 bg-slate-50/70 p-3 sm:p-4">
+                                <p class="text-sm font-bold text-slate-800">Pre-Test vs Post-Test growth</p>
+                                <p class="text-[11px] text-slate-500 mb-3">Average score per selected group, with the gain from Pre to Post.</p>
+                                <div class="h-[260px] relative"><canvas id="growthChart"></canvas><p id="growth-empty" class="hidden absolute inset-0 flex items-center justify-center text-center text-xs font-semibold text-slate-400 px-6"></p></div>
+                                <div id="growth-summary" class="flex flex-wrap gap-1.5 mt-3"></div>
+                            </div>
                             <div class="mt-4 overflow-auto rounded-2xl border border-slate-200">
-                                <table class="w-full text-left text-xs min-w-[650px]">
-                                    <thead class="bg-slate-50 border-b border-slate-200">
-                                        <tr class="text-[10px] uppercase tracking-wider font-bold text-slate-500">
-                                            <th class="px-4 py-3">Group</th>
-                                            <th class="px-4 py-3 text-right">Records</th>
-                                            <th class="px-4 py-3 text-right">Avg Score</th>
-                                            <th class="px-4 py-3 text-right">Beginning</th>
-                                            <th class="px-4 py-3 text-right">Developing</th>
-                                            <th class="px-4 py-3 text-right">Approaching</th>
-                                            <th class="px-4 py-3 text-right">Proficient+</th>
-                                        </tr>
-                                    </thead>
+                                <table class="w-full text-left text-xs min-w-[720px]">
+                                    <thead id="comparison-table-head" class="bg-slate-50 border-b border-slate-200"><tr class="text-[10px] uppercase tracking-wider font-bold text-slate-500">
+                                        <th class="px-3 py-3">#</th><th class="px-4 py-3 sticky left-0 bg-slate-50">Group</th><th class="px-4 py-3 text-right">Records</th><th class="px-4 py-3 text-right">Avg Score</th><th class="px-4 py-3 text-right">vs Overall</th><th class="px-4 py-3 text-right">Beginning</th><th class="px-4 py-3 text-right">Developing</th><th class="px-4 py-3 text-right">Approaching</th><th class="px-4 py-3 text-right">Proficient+</th>
+                                    </tr></thead>
                                     <tbody id="comparison-table-body" class="divide-y divide-slate-100"></tbody>
                                 </table>
                             </div>
@@ -1103,6 +1109,10 @@
                         </div>
                     </div>
                     <div class="overflow-auto flex-1 relative">
+<div class="md:hidden flex items-center gap-2 px-3 py-2 border-b border-slate-100 bg-white sticky top-0 z-10">
+                        <label class="flex items-center gap-2 text-xs font-semibold text-slate-600"><input type="checkbox" onchange="toggleSelectAllVisible(this.checked)" class="w-4 h-4 accent-indigo-600"> All</label>
+                        <select onchange="setSortFromSelect(this.value)" class="ml-auto px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700"><option value="lastName">Sort: Name</option><option value="score">Sort: Score</option><option value="grade">Sort: Grade</option><option value="subject">Sort: Subject</option></select>
+                    </div>
                         <table class="w-full text-left border-collapse whitespace-nowrap min-w-max">
                             <thead class="sticky top-0 bg-slate-50 border-b border-slate-200/80 z-10">
                                 <tr class="text-slate-500 text-[11px] uppercase tracking-wider font-bold">
@@ -1607,12 +1617,22 @@
         </div>
     </div>
 
+    <nav id="bottom-nav" class="hidden" aria-label="Primary">
+        <button type="button" data-tab="dashboard-tab" class="active" onclick="switchTab('dashboard-tab')"><i class="fa-solid fa-chart-pie"></i>Dashboard</button>
+        <button type="button" data-tab="data-tab" onclick="switchTab('data-tab')"><i class="fa-solid fa-database"></i>Data</button>
+        <button type="button" data-tab="insights-tab" onclick="switchTab('insights-tab')"><i class="fa-solid fa-wand-magic-sparkles"></i>AI</button>
+        <button type="button" id="bn-users-tab" data-tab="users-tab" class="hidden" onclick="switchTab('users-tab')"><i class="fa-solid fa-users-gear"></i>Users</button>
+    </nav>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast fixed bottom-6 right-6 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 opacity-0 translate-y-4 pointer-events-none z-50 text-xs font-semibold">
         <i id="toast-icon" class="fa-solid fa-circle-info text-base"></i>
         <span id="toast-msg">Notification</span>
     </div>
 
+    <script>
+        setTimeout(function(){ if (window.__graceReady) return; var m = document.getElementById('app-boot-message'); if (m) m.innerHTML = 'Still starting. Check your connection. <button onclick="location.reload()" class="underline font-bold">Reload</button>'; }, 12000);
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1626,7 +1646,7 @@
         const OPENAI_MODEL = "chat-latest";
         const OPENAI_PROXY_URL = ""; // Optional secure OpenAI proxy URL
         const GEMINI_MODEL = "gemini-3.8-flash";
-        const GEMINI_API_KEY = "AQ.Ab8RN6IDYKlkQt16q6QUD3bqqzOfJ-mrpf7LJU5RatcEQY50iw";
+        const GEMINI_API_KEY = "AQ.Ab8RN6IRu8F39MKnjSmO3ECpHwyDvyYD9Fa9pKtOcxuy-xMDrA";
         const GEMINI_GENERATE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
         const GEMINI_INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions";
 
@@ -1696,6 +1716,8 @@
         let assessmentServerSyncReceived = false;
         let lastDataSnapshotAt = 0;
         let cacheWriteTimer = null;
+        let dataRetryTimer = null, dataRetryCount = 0, dataWatchdog = null;
+        let growthChartInstance = null;
 
         window.togglePasswordVisibility = (inputId, iconId) => {
             const input = document.getElementById(inputId);
@@ -1756,17 +1778,22 @@
         }
 
         function hideBootScreen() {
+            window.__graceReady = true;
             const el = document.getElementById('app-boot-screen');
             if (!el) return;
             el.classList.add('opacity-0');
             el.classList.add('is-hidden');
         }
 
-        function showDataLoading(message = 'Preparing your assessment workspace...', detail = 'Downloading the first copy of your accessible assessment data.') {
+        function showDataLoading(message = 'Preparing your assessment workspace...', detail = 'This usually takes a few seconds.', mode = 'loading') {
             const screen = document.getElementById('data-loading-screen');
             if (!screen) return;
-            document.getElementById('data-loading-message').textContent = message;
-            document.getElementById('data-loading-detail').textContent = detail;
+            const set = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
+            set('data-loading-message', message); set('data-loading-detail', detail);
+            set('data-loading-title', mode === 'error' ? 'Connection problem' : 'Loading Assessment Data');
+            screen.classList.toggle('is-error', mode === 'error');
+            const ic = document.getElementById('data-loading-icon');
+            if (ic) ic.className = 'fa-solid ' + (mode === 'error' ? 'fa-triangle-exclamation' : 'fa-database') + ' text-lg';
             screen.classList.remove('is-hidden');
             screen.classList.add('is-visible');
         }
@@ -1774,9 +1801,12 @@
         function hideDataLoading() {
             const screen = document.getElementById('data-loading-screen');
             if (!screen) return;
-            screen.classList.remove('is-visible');
+            screen.classList.remove('is-visible', 'is-error');
             screen.classList.add('is-hidden');
         }
+
+        function hasUsableData() { return Array.isArray(accessibleAssessmentsData) && accessibleAssessmentsData.length > 0; }
+        function updateDashboardEmptyState() { document.getElementById('dash-empty')?.classList.toggle('hidden', hasUsableData() || !assessmentServerSyncReceived); }
 
         function setDataSyncStatus(textValue, tone = 'ready') {
             const chip = document.getElementById('data-sync-status');
@@ -1791,9 +1821,10 @@
                 synced: ['bg-emerald-50','text-emerald-700','border-emerald-200','fa-circle-check']
             };
             const t = tones[tone] || tones.ready;
-            chip.className = 'data-sync-indicator hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold';
+            chip.className = 'data-sync-indicator inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-bold';
             chip.classList.add(...t.slice(0,3));
             textEl.textContent = textValue;
+            document.getElementById('sync-bar')?.classList.toggle('on', tone === 'syncing' || tone === 'cached');
             icon.className = `fa-solid ${t[3]} text-[9px]`;
             if (t[4]) icon.classList.add(t[4]);
         }
@@ -1880,7 +1911,7 @@
         function captureUIState() {
             const email = userProfile?.email || getSessionEmail();
             if (!email) return;
-            const activeTab = document.querySelector('.tab-content.active')?.id || safeLocalStorageGet(getUIStateKey(email))?.lastTab || 'dashboard-tab';
+            const activeTab = document.querySelector('.tab-content.active')?.id || readUIState(email)?.lastTab || 'dashboard-tab';
             const state = {
                 lastTab: activeTab,
                 schoolYear: universalSchoolYear,
@@ -1986,23 +2017,18 @@
         }
 
         function refreshAssessmentViews() {
-            refreshAccessibleData();
-            populateSchoolYearFilters();
-            populateGlobalSubjectFilters();
-
-            // Restore the saved controls after the first usable data set is available.
-            if (!uiStateRestored) {
-                restoreUIStateAfterDataReady();
-                uiStateRestored = true;
-            } else {
-                filterAndRenderData({ immediate: true });
-                populateAISelects();
-                updateDashFilterValues();
-                updateDashboardSummary();
-                updateComparisonControls();
+            [refreshAccessibleData, populateSchoolYearFilters, populateGlobalSubjectFilters].forEach(fn => { try { fn(); } catch (e) { console.error(e); } });
+            const renderAll = () => { filterAndRenderData({ immediate: true }); populateAISelects(); updateDashFilterValues(); updateDashboardSummary(); updateComparisonControls(); };
+            try {
+                // Only restore saved filters once real records exist; an empty first cache snapshot must not consume the restore.
+                if (!uiStateRestored && hasUsableData()) { uiStateRestored = true; restoreUIStateAfterDataReady(); }
+                else renderAll();
+            } catch (e) {
+                console.error('View refresh failed', e);
+                try { renderAll(); } catch (e2) { console.error(e2); }
             }
-
-            if (userProfile?.role === 'admin') refreshTeacherAccessChecklists();
+            try { if (userProfile?.role === 'admin') refreshTeacherAccessChecklists(); } catch (e) {}
+            updateDashboardEmptyState();
         }
 
         async function usePersistentFirestoreCache(appInstance) {
@@ -2189,8 +2215,9 @@
 
             try {
                 if (!activeUser) {
-                    await signInAnonymously(auth);
-                    await new Promise(r => setTimeout(r, 600));
+                    const cred = await signInAnonymously(auth);
+                    activeUser = cred.user;
+                    try { await cred.user.getIdToken(); } catch (e) {}
                 }
                 
                 const profilesCol = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
@@ -2271,7 +2298,7 @@
 
             cacheProfile(profile);
             hideBootScreen();
-            hideDataLoading();
+            if (hasUsableData()) hideDataLoading();
             document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('sidebar').classList.remove('hidden');
@@ -2287,6 +2314,8 @@
                 document.getElementById('btn-users-tab').classList.add('hidden');
             }
 
+            document.getElementById('bottom-nav')?.classList.remove('hidden');
+            document.getElementById('bn-users-tab')?.classList.toggle('hidden', userProfile.role !== 'admin');
             const restoredTab = getStoredLastTab(userProfile.email);
             switchTab(restoredTab, { persist: false });
 
@@ -2317,6 +2346,7 @@
 
         function showLoginScreen() {
             hideBootScreen();
+            document.getElementById('bottom-nav')?.classList.add('hidden');
             hideDataLoading();
             document.getElementById('sidebar').classList.add('hidden');
             document.getElementById('main-content').classList.add('hidden');
@@ -2345,6 +2375,8 @@
             assessmentServerSyncReceived = false;
             if(dashboardChartInstance) { dashboardChartInstance.destroy(); dashboardChartInstance = null; }
             if(comparisonChartInstance) { comparisonChartInstance.destroy(); comparisonChartInstance = null; }
+            if(growthChartInstance) { growthChartInstance.destroy(); growthChartInstance = null; }
+            clearTimeout(dataRetryTimer); clearTimeout(dataWatchdog); dataRetryCount = 0;
             updateBatchToolbar();
             renderAIPrioritySummary();
             renderAIPriorityTargets();
@@ -2352,89 +2384,102 @@
             updateAICurriculumContext();
         }
 
-        function initDataSubscription() {
-            if (!userProfile || !db || !activeUser) {
-                pendingDataSubscription = true;
-                return;
+        function dropDataSubscription() {
+            if (unsubscribeAssessments) { try { unsubscribeAssessments(); } catch (e) {} }
+            unsubscribeAssessments = null;
+        }
+
+        // A failed listener used to stay "subscribed" forever, so only a page refresh could recover.
+        // Now the dead listener is dropped and retried with backoff.
+        function handleDataFailure(error) {
+            console.error('Assessment sync failed', error);
+            dropDataSubscription();
+            clearTimeout(dataWatchdog);
+            setDataSyncStatus(hasUsableData() ? 'Offline · cache only' : 'Data unavailable', 'offline');
+            if (dataRetryCount < 5) {
+                const wait = Math.min(1500 * 2 ** dataRetryCount, 15000);
+                dataRetryCount++;
+                clearTimeout(dataRetryTimer);
+                dataRetryTimer = setTimeout(() => { if (userProfile && activeUser) initDataSubscription(); }, wait);
+                if (!hasUsableData()) showDataLoading('Still connecting...', `Retrying automatically (${dataRetryCount} of 5).`);
+            } else if (!hasUsableData()) {
+                showDataLoading('We could not load your data.', 'Check your connection, then try again.', 'error');
+            } else {
+                hideDataLoading();
+                showToast('Showing saved data. Reconnect to sync.', 'error');
             }
+        }
+
+        window.retryDataLoad = () => {
+            dataRetryCount = 0;
+            clearTimeout(dataRetryTimer); clearTimeout(dataWatchdog);
+            dropDataSubscription();
+            showDataLoading('Reconnecting...', 'Fetching your assessment data again.');
+            if (userProfile && activeUser) initDataSubscription(); else pendingDataSubscription = true;
+        };
+        window.dismissDataLoading = () => hideDataLoading();
+
+        function initDataSubscription() {
+            if (!userProfile || !db || !activeUser) { pendingDataSubscription = true; return; }
             pendingDataSubscription = false;
             if (unsubscribeAssessments) return;
 
-            showDataLoading('Syncing assessment data...', 'The local cache is displayed first; Firebase now reconciles changes in the background.');
+            if (!hasUsableData() && !assessmentServerSyncReceived) showDataLoading('Syncing assessment data...', 'This usually takes a few seconds.');
             setDataSyncStatus('Syncing…', 'syncing');
 
             const recordsCol = collection(db, 'artifacts', appId, 'public', 'data', 'assessments');
-            unsubscribeAssessments = onSnapshot(recordsCol, { includeMetadataChanges: true }, (snapshot) => {
-                const fromCache = Boolean(snapshot.metadata?.fromCache);
-                const next = [];
-                snapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
+            try {
+                unsubscribeAssessments = onSnapshot(recordsCol, { includeMetadataChanges: true }, (snapshot) => {
+                    const fromCache = Boolean(snapshot.metadata?.fromCache);
+                    const next = [];
+                    snapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
 
-                // Firestore persistent cache may have an empty first snapshot while our
-                // application-level IndexedDB cache already contains usable records. Do not
-                // let that transient empty snapshot wipe the locally restored workspace.
-                if (fromCache && next.length === 0 && allAssessmentsData.length > 0) {
-                    refreshAccessibleData();
-                    hideDataLoading();
-                    setDataSyncStatus('Local cache · syncing', 'cached');
-                    return;
-                }
+                    // A transient empty cache snapshot must not wipe a locally restored workspace.
+                    if (fromCache && next.length === 0 && allAssessmentsData.length > 0) {
+                        refreshAccessibleData();
+                        hideDataLoading();
+                        setDataSyncStatus('Local cache · syncing', 'cached');
+                        return;
+                    }
 
-                allAssessmentsData = normalizeAssessmentRecords(next);
+                    allAssessmentsData = normalizeAssessmentRecords(next);
+                    if (!fromCache) {
+                        assessmentServerSyncReceived = true;
+                        lastDataSnapshotAt = Date.now();
+                        dataRetryCount = 0;
+                        clearTimeout(dataRetryTimer); clearTimeout(dataWatchdog);
+                    }
 
-                // A Firestore cache snapshot is useful for instant rendering, but it is not
-                // proof that the server has been reached. Keep the first-load screen alive
-                // when that cache is empty until server data arrives.
-                if (!fromCache) {
-                    assessmentServerSyncReceived = true;
-                    lastDataSnapshotAt = Date.now();
-                }
+                    refreshAssessmentViews();
+                    if (next.length > 0 || !fromCache) hideDataLoading();
+                    if (fromCache) {
+                        setDataSyncStatus(next.length ? 'Local sync' : 'Waiting for Firebase…', 'cached');
+                    } else {
+                        scheduleAssessmentCacheWrite();
+                        setDataSyncStatus('Synced', 'synced');
+                    }
+                }, handleDataFailure);
+            } catch (e) { handleDataFailure(e); return; }
 
-                refreshAssessmentViews();
-                if (next.length > 0 || !fromCache) hideDataLoading();
-                if (fromCache) {
-                    setDataSyncStatus(next.length ? 'Local sync' : 'Waiting for Firebase…', 'cached');
-                } else {
-                    scheduleAssessmentCacheWrite();
-                    setDataSyncStatus('Synced', 'synced');
-                }
-            }, (error) => {
-                console.error('Assessment subscription failed', error);
-                hideDataLoading();
-                if (Array.isArray(accessibleAssessmentsData) && accessibleAssessmentsData.length) {
-                    setDataSyncStatus('Offline · cache only', 'offline');
-                } else {
-                    setDataSyncStatus('Data unavailable', 'offline');
-                }
-            });
-
-            // Safety-net for browsers/environments where the realtime listener takes too long
-            // to deliver its first snapshot. Only runs when no server snapshot has arrived yet,
-            // so normal operation does not perform a second full read.
-            setTimeout(async () => {
+            // Safety net: if the realtime listener is slow, read once from the server directly.
+            clearTimeout(dataWatchdog);
+            dataWatchdog = setTimeout(async () => {
                 if (assessmentServerSyncReceived || !userProfile || !activeUser || !unsubscribeAssessments) return;
                 try {
-                    const fallbackSnapshot = await getDocsFromServer(recordsCol);
+                    const snap = await getDocsFromServer(recordsCol);
                     if (assessmentServerSyncReceived) return;
                     const next = [];
-                    fallbackSnapshot.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
+                    snap.forEach(docSnap => next.push({ id: docSnap.id, ...docSnap.data() }));
                     allAssessmentsData = normalizeAssessmentRecords(next);
                     assessmentServerSyncReceived = true;
                     lastDataSnapshotAt = Date.now();
+                    dataRetryCount = 0;
                     refreshAssessmentViews();
                     scheduleAssessmentCacheWrite();
                     hideDataLoading();
                     setDataSyncStatus('Synced', 'synced');
-                } catch (fallbackError) {
-                    console.warn('Assessment fallback read failed', fallbackError);
-                    if (Array.isArray(accessibleAssessmentsData) && accessibleAssessmentsData.length) {
-                        hideDataLoading();
-                        setDataSyncStatus('Offline · cache only', 'offline');
-                    } else {
-                        hideDataLoading();
-                        setDataSyncStatus('Data unavailable', 'offline');
-                    }
-                }
-            }, 5000);
+                } catch (err) { handleDataFailure(err); }
+            }, 6000);
         }
 
         function refreshAccessibleData() {
@@ -2603,6 +2648,10 @@
                 updateAccessChecklistCounts();
                 renderUsersTable();
             }
+
+            document.querySelectorAll('#bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+            // Charts drawn while this tab was hidden have no size; redraw once it is visible.
+            if (tabId === 'dashboard-tab' && userProfile) requestAnimationFrame(() => { try { renderDashboardChart(); renderComparisonChart(); } catch (e) { console.error(e); } });
 
             closeMobileSidebar();
         }
@@ -3051,6 +3100,8 @@
             const contextText = `${schoolYearLabel} · ${subjectLabel} · ${competencyLabel}`;
             const ctx = document.getElementById('comparison-subject-context');
             if (ctx) ctx.textContent = contextText;
+            const fsum = document.getElementById('dash-filters-summary');
+            if (fsum) fsum.textContent = contextText;
             const recordContext = document.getElementById('dash-record-context');
             if (recordContext) recordContext.textContent = contextText;
             const scoreContext = document.getElementById('dash-score-context');
@@ -3337,6 +3388,8 @@
             if (dimension === 'grade') return String(record.grade || 'Unassigned');
             if (dimension === 'section') return String(record.section || 'Unassigned');
             if (dimension === 'competency') return String(record.competency || 'Unassigned');
+            if (dimension === 'subject') return String(record.subject || 'Unassigned');
+            if (dimension === 'schoolYear') return getRecordSchoolYear(record);
             return 'Unassigned';
         }
 
@@ -3465,6 +3518,7 @@
                     note.innerHTML = '<i class="fa-solid fa-circle-info mr-1 text-indigo-500"></i> Select multiple sections to compare performance within the current subject/grade filters.';
                 } else {
                     note.innerHTML = '<i class="fa-solid fa-circle-info mr-1 text-indigo-500"></i> Select multiple test types to compare Pre-Test, Post-Test, or other assessments within the same context.';
+                    if (dimension !== 'testType') note.innerHTML = '<i class="fa-solid fa-circle-info mr-1 text-indigo-500"></i> Select one or more groups to compare within the current subject and filters.';
                 }
             }
             const helper = document.getElementById('comparison-groups-helper');
@@ -3473,7 +3527,7 @@
                     grade: 'Select one or more grade levels to compare.',
                     section: 'Select one or more sections to compare.',
                     competency: 'Select one or more competencies to compare.',
-                    testType: 'Select one or more test types to compare.'
+                    testType: 'Select one or more test types to compare.', subject: 'Select one or more subjects to compare.', schoolYear: 'Select one or more school years to compare.'
                 }[dimension] || 'Select one or more groups to compare.';
             }
             updateComparisonGroups();
@@ -3494,184 +3548,218 @@
             renderComparisonChart();
         };
 
-        function renderComparisonSummaryTable(stats) {
-            const tbody = document.getElementById('comparison-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
+        if (window.Chart) Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+        const CMP_LEVELS = [['Beginning', '#ef4444'], ['Developing', '#f97316'], ['Approaching Proficiency', '#eab308'], ['Proficient', '#22c55e'], ['Advanced', '#3b82f6']];
+        const CMP_PALETTE = ['#4f46e5', '#7c3aed', '#0891b2', '#059669', '#d97706', '#db2777', '#475569'];
+        const cmpShort = l => String(l).length > 24 ? String(l).slice(0, 23) + '…' : String(l);
+        const cmpPct = (n, d) => d ? Math.round(n / d * 1000) / 10 : 0;
 
-            stats.forEach(item => {
-                const pct = key => item.scoredCount ? Math.round((item.proficiency[key] / item.scoredCount) * 100) : 0;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="px-4 py-3 font-semibold text-slate-800">${escapeHtml(item.group)}</td>
-                    <td class="px-4 py-3 text-right text-slate-600">${item.count.toLocaleString()}</td>
-                    <td class="px-4 py-3 text-right font-bold text-slate-800">${item.avg.toFixed(1)}%</td>
-                    <td class="px-4 py-3 text-right text-rose-600 font-semibold">${pct('Beginning')}%</td>
-                    <td class="px-4 py-3 text-right text-orange-600 font-semibold">${pct('Developing')}%</td>
-                    <td class="px-4 py-3 text-right text-amber-600 font-semibold">${pct('Approaching Proficiency')}%</td>
-                    <td class="px-4 py-3 text-right text-emerald-600 font-semibold">${(pct('Proficient') + pct('Advanced'))}%</td>`;
-                tbody.appendChild(tr);
-            });
-
-            if (!stats.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-slate-400">No comparison data.</td></tr>';
+        // Draws value labels and a dashed "overall average" line.
+        const cmpPlugin = { id: 'cmpOverlay', afterDatasetsDraw(c) {
+            const o = c.options.plugins.cmpOverlay || {}, x = c.ctx, h = c.options.indexAxis === 'y';
+            if (o.labels) {
+                const fmt = v => o.labels === 'count' ? Number(v).toLocaleString() : Number(v).toFixed(1) + '%';
+                x.save(); x.font = '600 10px "Plus Jakarta Sans", sans-serif'; x.fillStyle = '#334155'; x.textBaseline = 'middle';
+                c.getDatasetMeta(0).data.forEach((el, i) => {
+                    const v = c.data.datasets[0].data[i]; if (v == null) return;
+                    if (h) { x.textAlign = 'left'; x.fillText(fmt(v), el.x + 6, el.y); } else { x.textAlign = 'center'; x.fillText(fmt(v), el.x, el.y - 10); }
+                });
+                x.restore();
             }
+            if (typeof o.line === 'number') {
+                const sc = c.scales[h ? 'x' : 'y']; if (!sc) return;
+                const p = sc.getPixelForValue(o.line), a = c.chartArea;
+                x.save(); x.strokeStyle = '#475569'; x.setLineDash([5, 4]); x.lineWidth = 1.2; x.beginPath();
+                if (h) { x.moveTo(p, a.top); x.lineTo(p, a.bottom); } else { x.moveTo(a.left, p); x.lineTo(a.right, p); }
+                x.stroke(); x.restore();
+            }
+        } };
+
+        function cmpMetricValue(s, metric) {
+            const n = s.scoredCount || 0;
+            if (metric === 'count') return s.count;
+            if (metric === 'proficientRate') return cmpPct(s.proficiency.Proficient + s.proficiency.Advanced, n);
+            if (metric === 'interventionRate') return cmpPct(s.proficiency.Beginning + s.proficiency.Developing, n);
+            return Number(s.avg.toFixed(1));
+        }
+
+        function sortComparisonStats(stats) {
+            const k = document.getElementById('comparison-sort')?.value || 'group', a = [...stats];
+            if (k === 'avgDesc') a.sort((x, y) => y.avg - x.avg);
+            else if (k === 'avgAsc') a.sort((x, y) => x.avg - y.avg);
+            else if (k === 'countDesc') a.sort((x, y) => y.count - x.count);
+            return a;
+        }
+
+        function cmpOverallAvg(stats) {
+            const sc = stats.filter(s => s.scoredCount), t = sc.reduce((n, s) => n + s.scoredCount, 0);
+            return t ? sc.reduce((n, s) => n + s.avg * s.scoredCount, 0) / t : 0;
+        }
+
+        function renderComparisonInsights(stats) {
+            const el = document.getElementById('comparison-insights'); if (!el) return;
+            const sc = stats.filter(s => s.scoredCount);
+            if (!sc.length) { el.innerHTML = ''; return; }
+            const hi = sc.reduce((a, b) => b.avg > a.avg ? b : a), lo = sc.reduce((a, b) => b.avg < a.avg ? b : a);
+            const card = (i, c, l, v, sub) => `<div class="rounded-2xl border border-slate-100 bg-white p-3 min-w-0"><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400"><i class="fa-solid ${i} ${c} mr-1"></i>${l}</p><p class="text-sm sm:text-base font-extrabold text-slate-900 mt-1 truncate" title="${escapeHtml(v)}">${escapeHtml(v)}</p><p class="text-[11px] text-slate-500">${sub}</p></div>`;
+            el.innerHTML = card('fa-trophy', 'text-emerald-500', 'Highest average', hi.group, hi.avg.toFixed(1) + '%')
+                + card('fa-triangle-exclamation', 'text-rose-500', 'Needs attention', lo.group, lo.avg.toFixed(1) + '%')
+                + card('fa-arrows-left-right', 'text-violet-500', 'Gap (high − low)', (hi.avg - lo.avg).toFixed(1) + ' pts', sc.length + ' groups')
+                + card('fa-bullseye', 'text-indigo-500', 'Overall average', cmpOverallAvg(stats).toFixed(1) + '%', stats.reduce((n, s) => n + s.count, 0).toLocaleString() + ' records');
+        }
+
+        function renderComparisonSummaryTable(stats) {
+            const tb = document.getElementById('comparison-table-body'); if (!tb) return;
+            if (!stats.length) { tb.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-slate-400">No comparison data.</td></tr>'; return; }
+            const overall = cmpOverallAvg(stats);
+            tb.innerHTML = stats.map((s, i) => {
+                const p = k => s.scoredCount ? Math.round(s.proficiency[k] / s.scoredCount * 100) : 0;
+                const d = s.scoredCount ? s.avg - overall : 0;
+                return `<tr><td class="px-3 py-3 text-slate-400 font-bold">${i + 1}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-800 sticky left-0 bg-white">${escapeHtml(s.group)}</td>
+                    <td class="px-4 py-3 text-right text-slate-600">${s.count.toLocaleString()}</td>
+                    <td class="px-4 py-3 text-right"><div class="flex items-center justify-end gap-2"><div class="hidden sm:block w-16 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full" style="width:${Math.min(100, s.avg)}%;background:${getProficiencyInfo(s.avg).hex}"></div></div><span class="font-bold text-slate-800">${s.avg.toFixed(1)}%</span></div></td>
+                    <td class="px-4 py-3 text-right font-semibold ${d >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${d >= 0 ? '+' : ''}${d.toFixed(1)}</td>
+                    <td class="px-4 py-3 text-right text-rose-600 font-semibold">${p('Beginning')}%</td>
+                    <td class="px-4 py-3 text-right text-orange-600 font-semibold">${p('Developing')}%</td>
+                    <td class="px-4 py-3 text-right text-amber-600 font-semibold">${p('Approaching Proficiency')}%</td>
+                    <td class="px-4 py-3 text-right text-emerald-600 font-semibold">${p('Proficient') + p('Advanced')}%</td></tr>`;
+            }).join('');
+        }
+
+        function renderGrowthChart() {
+            const cv = document.getElementById('growthChart'); if (!cv) return;
+            const empty = document.getElementById('growth-empty'), sum = document.getElementById('growth-summary');
+            if (growthChartInstance) { growthChartInstance.destroy(); growthChartInstance = null; }
+            if (sum) sum.innerHTML = '';
+            const msg = t => { empty.textContent = t; empty.classList.remove('hidden'); };
+            const dim = document.getElementById('comparison-dimension').value;
+            if (dim === 'testType') return msg('Choose another "Compare by" option to see Pre-Test vs Post-Test growth.');
+            const g = document.getElementById('comparison-filter-grade')?.value || '', sec = document.getElementById('comparison-filter-section')?.value || '';
+            const base = getDashboardSubjectFilteredData().filter(r => (!g || String(r.grade) === g) && (!sec || String(r.section) === sec) && comparisonSelectedGroups.has(getComparisonGroupValue(r, dim)));
+            const groups = [...new Set(base.map(r => getComparisonGroupValue(r, dim)))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+            const avg = (rs, t) => { const v = rs.filter(r => (r.testType || 'Pre-Test') === t).map(r => Number(r.score)).filter(Number.isFinite); return v.length ? Number((v.reduce((a, b) => a + b, 0) / v.length).toFixed(1)) : null; };
+            const pre = groups.map(k => avg(base.filter(r => getComparisonGroupValue(r, dim) === k), 'Pre-Test'));
+            const post = groups.map(k => avg(base.filter(r => getComparisonGroupValue(r, dim) === k), 'Post-Test'));
+            if (!groups.length || pre.every(v => v === null) || post.every(v => v === null)) return msg('Needs both Pre-Test and Post-Test scores for the selected groups.');
+            empty.classList.add('hidden');
+            growthChartInstance = new Chart(cv.getContext('2d'), {
+                type: 'bar',
+                data: { labels: groups.map(cmpShort), datasets: [
+                    { label: 'Pre-Test', data: pre, backgroundColor: '#94a3b8', borderRadius: 6, maxBarThickness: 34 },
+                    { label: 'Post-Test', data: post, backgroundColor: '#4f46e5', borderRadius: 6, maxBarThickness: 34 }] },
+                options: { responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Average score (%)' } }, x: { ticks: { autoSkip: false, font: { size: 10 }, maxRotation: 40 } } },
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }, tooltip: { callbacks: { title: i => groups[i[0].dataIndex] } } } }
+            });
+            if (sum) sum.innerHTML = groups.map((k, i) => pre[i] == null || post[i] == null ? '' : (d => `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${d >= 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">${escapeHtml(cmpShort(k))}: ${d >= 0 ? '+' : ''}${d.toFixed(1)}</span>`)(post[i] - pre[i])).join('');
         }
 
         window.renderComparisonChart = () => {
-            const canvas = document.getElementById('comparisonChart');
-            if (!canvas) return;
-
-            const entries = getComparisonGroupData();
-            const stats = buildComparisonStats(entries).filter(item => comparisonSelectedGroups.has(item.group));
+            const canvas = document.getElementById('comparisonChart'); if (!canvas) return;
+            const stats = sortComparisonStats(buildComparisonStats(getComparisonGroupData()).filter(s => comparisonSelectedGroups.has(s.group)));
             const metric = document.getElementById('comparison-metric')?.value || 'average';
-            const chartType = document.getElementById('comparison-chart-type')?.value || 'bar';
-            const emptyState = document.getElementById('comparison-chart-empty');
+            const type = document.getElementById('comparison-chart-type')?.value || 'bar';
+            const showLabels = document.getElementById('comparison-labels')?.checked !== false;
+            const emptyState = document.getElementById('comparison-chart-empty'), wrap = document.getElementById('comparison-chart-wrap');
+            const note = document.getElementById('comparison-chart-note'), legend = document.getElementById('comparison-legend');
 
             renderComparisonSummaryTable(stats);
-            if (comparisonChartInstance) comparisonChartInstance.destroy();
+            renderComparisonInsights(stats);
+            try { renderGrowthChart(); } catch (e) { console.error(e); }
+            if (comparisonChartInstance) { comparisonChartInstance.destroy(); comparisonChartInstance = null; }
+            note.textContent = ''; legend.innerHTML = '';
+            if (!stats.length) { emptyState?.classList.remove('hidden'); updateComparisonSelectionSummary(); return; }
+            emptyState?.classList.add('hidden');
 
-            if (!stats.length) {
-                if (emptyState) emptyState.classList.remove('hidden');
-                updateComparisonSelectionSummary();
-                return;
-            }
-            if (emptyState) emptyState.classList.add('hidden');
+            const mix = metric === 'proficiency' || metric === 'proficiencyPct';
+            let t = type;
+            if (t === 'radar' && stats.length < 3) { t = 'bar'; note.textContent = 'Radar needs at least 3 groups, so a column chart is shown.'; }
+            const horiz = t === 'horizontal', dough = t === 'doughnut';
+            const kind = dough ? 'doughnut' : t === 'line' ? 'line' : t === 'radar' ? 'radar' : 'bar';
+            wrap.style.height = horiz ? Math.max(300, stats.length * 34 + 90) + 'px' : '';
+            const labels = stats.map(s => s.group);
+            const unit = { count: 'Records', average: 'Average score (%)', proficientRate: 'Proficient + Advanced (%)', interventionRate: 'Needs intervention (%)', proficiency: 'Scored records', proficiencyPct: 'Share of scored records (%)' }[metric];
+            const capped = metric !== 'count' && metric !== 'proficiency';
+            const single = !mix;
+            const overall = cmpOverallAvg(stats);
+            let data, scales;
 
-            const labels = stats.map(item => item.group);
-            let chartConfig;
-
-            if (metric === 'proficiency' && chartType === 'bar') {
-                chartConfig = {
-                    type: 'bar',
-                    data: {
-                        labels,
-                        datasets: [
-                            { label: 'Beginning', data: stats.map(s => s.proficiency['Beginning']), backgroundColor: '#ef4444', stack: 'proficiency' },
-                            { label: 'Developing', data: stats.map(s => s.proficiency['Developing']), backgroundColor: '#f97316', stack: 'proficiency' },
-                            { label: 'Approaching Proficiency', data: stats.map(s => s.proficiency['Approaching Proficiency']), backgroundColor: '#eab308', stack: 'proficiency' },
-                            { label: 'Proficient', data: stats.map(s => s.proficiency['Proficient']), backgroundColor: '#22c55e', stack: 'proficiency' },
-                            { label: 'Advanced', data: stats.map(s => s.proficiency['Advanced']), backgroundColor: '#3b82f6', stack: 'proficiency' }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: { stacked: true, ticks: { font: { size: 10 }, autoSkip: false, maxRotation: 35, minRotation: 0 } },
-                            y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Scored Records' } }
-                        },
-                        plugins: {
-                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
-                            tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}` } }
-                        }
-                    }
-                };
-            } else if (metric === 'proficiency' && chartType === 'doughnut') {
-                const totalProf = { 'Beginning': 0, 'Developing': 0, 'Approaching Proficiency': 0, 'Proficient': 0, 'Advanced': 0 };
-                stats.forEach(s => Object.keys(totalProf).forEach(k => totalProf[k] += s.proficiency[k]));
-                const profLabels = Object.keys(totalProf);
-                const profValues = Object.values(totalProf);
-
-                chartConfig = {
-                    type: 'doughnut',
-                    data: {
-                        labels: profLabels,
-                        datasets: [{
-                            data: profValues,
-                            backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'],
-                            borderWidth: 3,
-                            borderColor: '#ffffff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '62%',
-                        plugins: {
-                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => {
-                                        const total = profValues.reduce((a, b) => a + b, 0) || 1;
-                                        const pct = Math.round((ctx.parsed / total) * 100);
-                                        return `${ctx.label}: ${ctx.parsed} (${pct}%)`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
+            if (dough && mix) {
+                const tot = {}; CMP_LEVELS.forEach(([k]) => tot[k] = stats.reduce((n, s) => n + s.proficiency[k], 0));
+                data = { labels: CMP_LEVELS.map(l => l[0]), datasets: [{ data: CMP_LEVELS.map(([k]) => tot[k]), backgroundColor: CMP_LEVELS.map(l => l[1]), borderWidth: 3, borderColor: '#fff' }] };
+            } else if (dough) {
+                data = { labels: labels.map(cmpShort), datasets: [{ label: unit, data: stats.map(s => cmpMetricValue(s, metric)), backgroundColor: labels.map((_, i) => CMP_PALETTE[i % 7]), borderWidth: 3, borderColor: '#fff' }] };
+            } else if (mix) {
+                data = { labels: labels.map(cmpShort), datasets: CMP_LEVELS.map(([k, c]) => ({
+                    label: k, borderColor: c, backgroundColor: kind === 'radar' ? c + '33' : c, fill: kind === 'radar', tension: .3, pointRadius: 4, stack: 'p',
+                    data: stats.map(s => metric === 'proficiencyPct' ? cmpPct(s.proficiency[k], s.scoredCount) : s.proficiency[k]) })) };
             } else {
-                const values = metric === 'count' ? stats.map(s => s.count) : stats.map(s => Number(s.avg.toFixed(1)));
-                const unitLabel = metric === 'count' ? 'Records' : 'Average Score (%)';
-                const maxAverage = metric === 'average' ? Math.max(...values, 0) : 0;
-                const averageScaleMax = metric === 'average' && maxAverage <= 100 ? 100 : undefined;
-
-                if (chartType === 'doughnut') {
-                    chartConfig = {
-                        type: 'doughnut',
-                        data: {
-                            labels,
-                            datasets: [{
-                                label: unitLabel,
-                                data: values,
-                                backgroundColor: labels.map((_, i) => ['#4f46e5','#7c3aed','#0891b2','#059669','#d97706','#db2777','#475569'][i % 7]),
-                                borderWidth: 3,
-                                borderColor: '#ffffff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            cutout: '60%',
-                            plugins: {
-                                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
-                                tooltip: {
-                                    callbacks: {
-                                        label: ctx => metric === 'count'
-                                            ? `${ctx.label}: ${ctx.parsed} records`
-                                            : `${ctx.label}: ${Number(ctx.parsed).toFixed(1)}%`
-                                    }
-                                }
-                            }
-                        }
-                    };
-                } else {
-                    chartConfig = {
-                        type: 'bar',
-                        data: {
-                            labels,
-                            datasets: [{
-                                label: unitLabel,
-                                data: values,
-                                backgroundColor: '#4f46e5',
-                                borderRadius: 8,
-                                maxBarThickness: 42
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: averageScaleMax,
-                                    title: { display: true, text: unitLabel }
-                                },
-                                x: { ticks: { font: { size: 10 }, autoSkip: false, maxRotation: 35, minRotation: 0 } }
-                            },
-                            plugins: {
-                                legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
-                            }
-                        }
-                    };
-                }
+                const vals = stats.map(s => cmpMetricValue(s, metric));
+                const col = metric === 'average' ? vals.map(v => getProficiencyInfo(v).hex) : metric === 'proficientRate' ? '#16a34a' : metric === 'interventionRate' ? '#e11d48' : '#4f46e5';
+                data = { labels: labels.map(cmpShort), datasets: [{ label: unit, data: vals, backgroundColor: kind === 'radar' ? '#4f46e533' : col, borderColor: kind === 'line' || kind === 'radar' ? '#4f46e5' : col,
+                    pointBackgroundColor: col, pointRadius: 5, tension: .3, fill: kind === 'radar', borderRadius: 8, maxBarThickness: 42 }] };
             }
 
-            comparisonChartInstance = new Chart(canvas.getContext('2d'), chartConfig);
+            if (kind === 'radar') scales = { r: { beginAtZero: true, max: capped ? 100 : undefined, ticks: { font: { size: 9 }, backdropColor: 'transparent' }, pointLabels: { font: { size: 10 } } } };
+            else if (!dough) {
+                const stacked = mix && kind === 'bar';
+                const val = { beginAtZero: true, max: capped ? 100 : undefined, stacked, title: { display: true, text: unit }, ticks: { font: { size: 10 } } };
+                const cat = { stacked, ticks: { autoSkip: false, font: { size: 10 }, maxRotation: horiz ? 0 : 40 } };
+                scales = horiz ? { x: val, y: cat } : { x: cat, y: val };
+            }
+
+            const bandable = single && !dough && (kind === 'bar' || kind === 'line');
+            comparisonChartInstance = new Chart(canvas.getContext('2d'), {
+                type: kind, data, plugins: [cmpPlugin],
+                options: { responsive: true, maintainAspectRatio: false, animation: { duration: 350 }, indexAxis: horiz ? 'y' : 'x', cutout: dough ? '60%' : undefined, scales,
+                    plugins: {
+                        legend: { display: !single || dough, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                        tooltip: { callbacks: {
+                            title: i => (dough && mix) ? i[0].label : (labels[i[0].dataIndex] ?? i[0].label),
+                            label: c => single ? `${c.formattedValue}${metric === 'count' ? ' records' : '%'}` : `${c.dataset.label || c.label}: ${c.formattedValue}${metric === 'proficiencyPct' ? '%' : ''}` } },
+                        cmpOverlay: { labels: bandable && showLabels ? (metric === 'count' ? 'count' : 'pct') : '', line: bandable && metric === 'average' ? overall : null }
+                    } }
+            });
+
+            if (single && metric === 'average' && !dough) {
+                legend.innerHTML = [['Beginning ≤19', '#ef4444'], ['Developing 20–39', '#f97316'], ['Approaching 40–59', '#eab308'], ['Proficient 60–79', '#22c55e'], ['Advanced 80+', '#3b82f6']]
+                    .map(([l, c]) => `<span class="inline-flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-full inline-block" style="background:${c}"></i>${l}</span>`).join('') + (bandable ? '<span>┄ Overall average</span>' : '');
+            }
             updateComparisonSelectionSummary();
         };
+
+        window.applyComparisonPreset = (p) => {
+            const P = { grade: ['grade', 'average', 'bar', 'group'], section: ['section', 'average', 'horizontal', 'avgDesc'], growth: ['grade', 'average', 'bar', 'group'], competency: ['competency', 'average', 'horizontal', 'avgAsc'], mix: ['grade', 'proficiencyPct', 'bar', 'group'] }[p];
+            if (!P) return;
+            ['comparison-dimension', 'comparison-metric', 'comparison-chart-type', 'comparison-sort'].forEach((id, i) => setSelectIfAvailable(id, P[i]));
+            document.querySelectorAll('#comparison-presets button').forEach(b => b.classList.toggle('active', b.dataset.preset === p));
+            updateComparisonControls();
+            if (p === 'growth') document.getElementById('growth-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            captureUIState();
+        };
+
+        function cmpDownload(href, name) { const a = document.createElement('a'); a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+
+        window.exportComparisonCSV = () => {
+            const rows = [...document.querySelectorAll('#comparison-table-body tr')];
+            if (!rows.length || rows[0].children.length < 3) return showToast('Nothing to export yet.', 'error');
+            const line = cells => [...cells].map(c => `"${c.innerText.replace(/"/g, '""').trim()}"`).join(',');
+            const csv = line(document.querySelectorAll('#comparison-table-head th')) + '\n' + rows.map(r => line(r.children)).join('\n');
+            const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+            cmpDownload(url, 'grace-comparison.csv'); setTimeout(() => URL.revokeObjectURL(url), 1500);
+        };
+
+        window.downloadComparisonChart = () => {
+            if (!comparisonChartInstance) return showToast('Nothing to save yet.', 'error');
+            const c = comparisonChartInstance.canvas, o = document.createElement('canvas'); o.width = c.width; o.height = c.height;
+            const x = o.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, o.width, o.height); x.drawImage(c, 0, 0);
+            cmpDownload(o.toDataURL('image/png'), 'grace-comparison.png');
+        };
+
+        window.toggleDashFilters = () => document.getElementById('dash-filters-body')?.classList.toggle('collapsed');
+        window.setSortFromSelect = (col) => { currentSort.column = col; currentSort.asc = col !== 'score'; sortData(); renderTable(); };
+        if (window.innerWidth < 768) document.getElementById('comparison-filters')?.removeAttribute('open');
 
         document.getElementById('add-entry-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -5403,6 +5491,15 @@ Additional formatting requirements for Gemini:
             try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'profiles', id)); showToast('Access revoked.'); renderUsersTable(); }
             catch (err) { console.error(err); showToast('Failed to remove user.', 'error'); }
         };
+
+        // Recover automatically when the connection or tab comes back, instead of needing a refresh.
+        function resumeDataSync() {
+            if (!userProfile || !activeUser || unsubscribeAssessments) return;
+            dataRetryCount = 0;
+            initDataSubscription();
+        }
+        window.addEventListener('online', resumeDataSync);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) resumeDataSync(); });
 
         window.addEventListener('pagehide', captureUIState);
         window.addEventListener('beforeunload', captureUIState);
