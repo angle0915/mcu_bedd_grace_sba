@@ -1080,9 +1080,9 @@
                                 <div class="relative w-full sm:w-[360px]">
                                     <label for="student-search" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Student Search</label>
                                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-[2.65rem] text-slate-400 text-xs"></i>
-                                    <input id="student-search" type="search" oninput="filterAndRenderData()"
+                                    <input id="student-search" type="search" oninput="instantStudentSearch()"
                                         class="w-full pl-9 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400"
-                                        placeholder="Search student name..." autocomplete="off">
+                                        placeholder="Search by first, last or full name..." autocomplete="off">
                                     <button type="button" onclick="clearStudentSearch()" class="hidden absolute right-2.5 top-[2.35rem] w-6 h-6 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600" id="clear-student-search">
                                         <i class="fa-solid fa-xmark text-[10px]"></i>
                                     </button>
@@ -1252,22 +1252,25 @@
                             <div class="xl:w-[360px]">
                                 <label for="ai-provider" class="block text-xs font-semibold text-indigo-100 uppercase tracking-wider mb-1.5">AI Provider</label>
                                 <select id="ai-provider" onchange="handleAIProviderChange()" class="w-full px-3.5 py-2.5 bg-slate-900/40 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white text-sm font-semibold [&>option]:text-slate-800">
-                                    <option value="auto">Automatic — Gemini → ChatGPT → Free Engine</option>
+                                    <option value="auto">Automatic — Gemini → Free cloud AI → Free Engine</option>
                                     <option value="local">Free Intervention Engine</option>
-                                    <option value="gemini">Gemini 3.8 Flash — Free Tier</option>
-                                    <option value="gemini-search">Gemini 3.8 Flash + Google Search (optional)</option>
+                                    <option value="gemini">Gemini Flash — Free Tier</option>
+                                    <option value="gemini-search">Gemini Flash + Google Search (optional)</option>
+                                    <option value="cloud">Free cloud AI — no key needed</option>
                                     <option value="openai">ChatGPT Latest — secure proxy</option>
                                 </select>
                             </div>
                             <div id="gemini-config-panel" class="flex-1">
                                 <div class="rounded-xl bg-emerald-400/10 border border-emerald-300/15 px-3.5 py-3 text-[11px] text-emerald-50 leading-relaxed">
-                                    <div class="flex items-center gap-2 font-bold mb-1"><i class="fa-solid fa-sparkles text-emerald-300"></i> Gemini 3.8 Flash · Single-file mode</div>
-                                    <p id="gemini-server-status">Gemini is configured directly in this HTML for one-file convenience. No teacher key entry is required.</p>
+                                    <div class="flex items-center gap-2 font-bold mb-2"><i class="fa-solid fa-key text-emerald-300"></i> Gemini API key (saved on this device only)</div>
+                                    <div class="flex gap-2"><input id="gemini-key-input" type="password" autocomplete="off" placeholder="Paste a key that starts with AIza" class="min-w-0 flex-1 px-3 py-2 bg-slate-900/40 border border-white/20 rounded-lg text-white text-xs focus:outline-none focus:ring-2 focus:ring-white"><button type="button" onclick="saveGeminiKey()" class="px-3 py-2 rounded-lg bg-white text-indigo-900 text-xs font-bold">Save &amp; test</button><button type="button" onclick="clearGeminiKey()" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-xs font-semibold">Clear</button></div>
+                                    <p id="gemini-server-status" class="mt-2">No key saved yet.</p>
+                                    <p class="mt-1 text-emerald-100/80">Learner names are replaced with anonymous IDs before anything is sent to an online AI.</p>
                                 </div>
                             </div>
                             <div class="flex-1 text-[10px] text-indigo-200 leading-relaxed">
                                 <i class="fa-solid fa-shield-halved mr-1 text-amber-300"></i>
-                                Free Engine always works. Gemini 3.8 Flash uses its Free Tier for text generation; live Google Search grounding is optional and may have separate search charges.
+                                Free Engine always works. Gemini Flash uses its Free Tier for text generation; live Google Search grounding is optional and may have separate search charges.
                             </div>
                         </div>
                     </div>
@@ -1665,8 +1668,11 @@
         // For production, restrict the key by HTTP referrer/API restrictions in Google AI Studio / Google Cloud.
         const OPENAI_MODEL = "chat-latest";
         const OPENAI_PROXY_URL = ""; // Optional secure OpenAI proxy URL
-        const GEMINI_MODEL = "gemini-3.8-flash";
-        const GEMINI_API_KEY = "AQ.Ab8RN6IRu8F39MKnjSmO3ECpHwyDvyYD9Fa9pKtOcxuy-xMDrA";
+        const GEMINI_MODEL = "gemini-flash-latest";
+        const GEMINI_FALLBACK_MODELS = ["gemini-2.5-flash"];
+        const GEMINI_LABEL = "Gemini Flash";
+        const GEMINI_KEY_STORAGE = "grace_gemini_key";
+        const GEMINI_API_KEY = ""; // Paste a valid key in the AI settings panel; it is stored on this device only.
         const GEMINI_GENERATE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
         const GEMINI_INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions";
 
@@ -2534,6 +2540,27 @@
             }
         }
 
+        // Accent-insensitive, punctuation-insensitive, word-order-independent search.
+        function normalizeSearchText(v) {
+            return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+        }
+        const searchKeyCache = new WeakMap();
+        function getRecordSearchKey(r) {
+            let key = searchKeyCache.get(r);
+            if (key === undefined) {
+                key = normalizeSearchText([r.lastName, r.firstName, r.middleName].join(' '));
+                searchKeyCache.set(r, key);
+            }
+            return key;
+        }
+        var searchFrame = 0;
+        // Runs on every keystroke (one render per frame), so results appear as you type.
+        window.instantStudentSearch = () => {
+            clearTimeout(dataFilterRenderTimer);
+            cancelAnimationFrame(searchFrame);
+            searchFrame = requestAnimationFrame(() => filterAndRenderData({ immediate: true }));
+        };
+
         function getStudentSearchTerm() {
             return String(document.getElementById('student-search')?.value || '').trim().toLowerCase();
         }
@@ -2551,21 +2578,19 @@
             const source = Array.isArray(accessibleAssessmentsData) ? accessibleAssessmentsData : [];
             const nextFiltered = [];
 
+            const tokens = normalizeSearchText(search).split(' ').filter(Boolean);
+            let otherYear = 0;
             for (let i = 0; i < source.length; i++) {
                 const r = source[i];
-                const recordSchoolYear = normalizeFilterValue(getRecordSchoolYear(r));
-                if (selectedSchoolYear && recordSchoolYear !== selectedSchoolYear) continue;
-
-                if (search) {
-                    const fullName = [r.lastName || '', r.firstName || '', r.middleName || '']
-                        .join(' ')
-                        .replace(/\s+/g, ' ')
-                        .trim()
-                        .toLowerCase();
-                    if (!fullName.includes(search)) continue;
+                if (tokens.length) {
+                    const key = getRecordSearchKey(r);
+                    if (!tokens.every(t => key.includes(t))) continue;
                 }
+                const recordSchoolYear = normalizeFilterValue(getRecordSchoolYear(r));
+                if (selectedSchoolYear && recordSchoolYear !== selectedSchoolYear) { if (tokens.length) otherYear++; continue; }
                 nextFiltered.push(r);
             }
+            window.__searchOtherYear = otherYear;
 
             filteredAssessmentsData = nextFiltered;
 
@@ -3963,11 +3988,11 @@
             const search = getStudentSearchTerm();
             const clearSearch = document.getElementById('clear-student-search');
 
-            document.getElementById('record-count').textContent = `${filteredAssessmentsData.length} records`;
+            document.getElementById('record-count').textContent = search ? `${filteredAssessmentsData.length} of ${accessibleAssessmentsData.length} records` : `${filteredAssessmentsData.length} records`;
             if (clearSearch) clearSearch.classList.toggle('hidden', !search);
 
             if (filteredAssessmentsData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-12 text-slate-400">${search ? 'No student names match your search.' : 'No records found.'}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-12 text-slate-400">${search ? (window.__searchOtherYear ? `No match in this school year, but ${window.__searchOtherYear} record(s) match in other school years. Change the School Year filter to see them.` : `No student matches “${escapeHtml(search)}”. Try a first or last name.`) : 'No records found.'}</td></tr>`;
                 updateSelectAllState();
                 return;
             }
@@ -4764,6 +4789,64 @@
             return `Use targeted reteaching and ${subjectFocus}. Move toward independent application and short mastery checks before enrichment.`;
         }
 
+        const PH_SUBJECT_TIPS = [
+            [/math/i, 'Mathematics', ['Teach in Concrete → Pictorial → Abstract steps using local objects (bottle caps, coins, sari-sari store prices) before symbols.', 'Use bar models for word problems and a 5-minute daily fluency drill on prerequisite facts.', 'Run error analysis: show 2–3 common wrong answers and have learners explain the mistake.']],
+            [/english/i, 'English', ['Do a short Phil-IRI-style oral reading check to place learners (frustration, instructional, independent level).', 'Use phonics and sight-word drills for early readers, then guided reading with short, familiar-context passages.', 'Give sentence frames for speaking and writing, with immediate corrective feedback.']],
+            [/filipino/i, 'Filipino', ['Gumamit ng maiikling teksto at gabay na tanong bago, habang, at pagkatapos magbasa.', 'Para sa baguhang mambabasa, magsagawa ng pantig at ponemang pagsasanay araw-araw.', 'Gumamit ng sentence frames at pangkatang pagsulat bago ang indibidwal na gawain.']],
+            [/sci/i, 'Science', ['Use 5E inquiry with low-cost materials and local phenomena (weather and typhoons, local plants, water sources).', 'Use diagram labeling and prediction → observation → explanation routines.', 'Pair vocabulary cards with a quick demonstration for each key term.']],
+            [/araling|social|\bap\b|history/i, 'Araling Panlipunan', ['Use concept maps, timeline strips and Philippine map reading for each lesson.', 'Link topics to the learners’ barangay or community through short interviews.', 'End each lesson with five key terms for retrieval practice.']],
+            [/mapeh|music|art|physical|\bp\.?e\b|health/i, 'MAPEH', ['Use rubric-based performance tasks with peer demonstration and feedback.', 'Set up stations so small groups can practice the weakest skill at their own pace.']],
+            [/esp|values|pagpapakatao|gmrc/i, 'Values Education', ['Use short real-life scenarios followed by guided discussion and reflection journals.', 'Connect each value to a small classroom or community action.']],
+            [/tle|epp|technology|livelihood/i, 'TLE', ['Use step-by-step demonstrations with job aids and a safety checklist.', 'Let learners practice in pairs and give a quick performance check.']]
+        ];
+        function phSubjectTips(subject) {
+            const hit = PH_SUBJECT_TIPS.find(([re]) => re.test(subject || ''));
+            return hit ? hit : [null, subject || 'General', ['Model explicitly, give guided practice in short cycles, and check understanding after each step.', 'Use examples from the learners’ community and clarify ideas in Filipino or the home language when helpful.']];
+        }
+        function phGradeBand(records) {
+            const g = String(records[0]?.grade || '');
+            if (/kinder/i.test(g)) return 'K–3';
+            const n = Number((g.match(/\d+/) || [])[0]);
+            return !n ? '' : n <= 3 ? 'K–3' : n <= 6 ? '4–6' : n <= 10 ? '7–10' : '11–12';
+        }
+        function phPromptHints(subject) {
+            return 'Public-school reality: large classes (often 40–50 learners) and limited materials, so keep strategies low-cost and realistic. Use a tiered response (whole class, small group, intensive tutoring such as the ARAL Program). Give a 6-week plan with progress monitoring and exit criteria. Contextualize examples to Filipino communities and allow Filipino or home-language clarification. Suggest sharing results at a Learning Action Cell (LAC). Subject focus: ' + (subject || 'all subjects') + '.';
+        }
+        function phPlanHtml({ target, type, subject, relevantData, priorityCounts }) {
+            const all = getAISubjectFilteredData().filter(r => getAIGroupLabel(r, type) === target);
+            const avgOf = t => { const v = all.filter(r => (r.testType || '') === t).map(r => Number(r.score)).filter(Number.isFinite); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+            const pre = avgOf('Pre-Test'), post = avgOf('Post-Test');
+            const learners = new Set(relevantData.map(r => [r.lastName, r.firstName, r.middleName].join('|').toLowerCase())).size;
+            const B = priorityCounts.Beginning, D = priorityCounts.Developing, A = priorityCounts['Approaching Proficiency'];
+            const growth = pre != null && post != null ? ` Pre-Test average ${pre.toFixed(1)}% → Post-Test ${post.toFixed(1)}% (${post - pre >= 0 ? '+' : ''}${(post - pre).toFixed(1)} points).` : '';
+            const [, label, tips] = phSubjectTips(subject);
+            const band = phGradeBand(relevantData);
+            const bandTip = { 'K–3': 'Early grades: prioritize foundational reading and numeracy, keep sessions short (15–20 min), and use home-language support to build understanding.', '4–6': 'Intermediate grades: combine peer tutoring with short independent practice and weekly progress checks.', '7–10': 'Junior high: use ARAL-style tutoring blocks, study-skills routines and learner-led peer groups.', '11–12': 'Senior high: use project-based remediation tied to the learner’s track and specific competency gaps.' }[band];
+            const li = arr => arr.map(x => `<li>${escapeHtml(x)}</li>`).join('');
+            return `
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-5 space-y-4">
+                        <div><h3 class="!mt-0">Philippine Classroom Action Plan</h3>
+                        <p><strong>${learners}</strong> learner(s) in the selected focus: ${B} Beginning · ${D} Developing · ${A} Approaching.${escapeHtml(growth)}</p></div>
+                        <div><h4>Tiered response</h4><ul>
+                            <li><strong>Tier 3 — Intensive (Beginning):</strong> 1:1 or very small group, 3–4 sessions a week of 20–30 minutes outside core lessons (advisory period, after class, or ARAL-style tutoring). Start from prerequisite skills and tell the School Head or ARAL coordinator.</li>
+                            <li><strong>Tier 2 — Targeted (Developing):</strong> small groups 2–3 times a week for 15–20 minutes during class stations, focused on the weakest competency.</li>
+                            <li><strong>Tier 1 — Whole class (Approaching):</strong> reteach inside the regular lesson, add spiral review, and pair each learner with a stronger peer tutor.</li></ul></div>
+                        <div><h4>${escapeHtml(label)} strategies</h4><ul>${li(tips)}</ul>${bandTip ? `<p>${escapeHtml(bandTip)}</p>` : ''}</div>
+                        <div><h4>6-week timeline</h4><ol>
+                            <li><strong>Week 1:</strong> run a 5–10 item diagnostic on prerequisite skills and form the three tiers.</li>
+                            <li><strong>Weeks 2–4:</strong> deliver the tiers, give a 3–5 item daily check, and record who is improving.</li>
+                            <li><strong>Week 5:</strong> give a parallel form of the competency test as a progress check.</li>
+                            <li><strong>Week 6:</strong> regroup. Learners who reach Proficient (60% or higher) in two checks exit the tier; others continue or move up a tier.</li></ol></div>
+                        <div><h4>Low-cost and community support</h4><ul>
+                            <li>Send printed practice sheets or short self-learning materials home for learners with limited connectivity.</li>
+                            <li>Use examples from the learners’ barangay and clarify key ideas in Filipino or the home language.</li>
+                            <li>Share a simple 10-minute home-practice routine with parents or guardians through the PTA or a homeroom meeting.</li>
+                            <li>Refer learners with attendance or well-being concerns to the Homeroom Guidance adviser or guidance counselor.</li>
+                            <li>Bring these results to a Learning Action Cell (LAC) session to share strategies for the weakest competency.</li></ul></div>
+                        <p><strong>Success indicator:</strong> each priority learner moves up at least one proficiency level or gains 15 points or more on the parallel check.</p>
+                    </div>`;
+        }
+
         function renderLocalInterventionPlan({ target, type, subject, competency, relevantData, priorityCounts, competencySummary, lens }) {
             const sorted = relevantData.slice().sort((a, b) => {
                 const levelDiff = getAILevelRank(a.score) - getAILevelRank(b.score);
@@ -4838,6 +4921,8 @@
                         ${grouping}
                     </div>
 
+                    ${phPlanHtml({ target, type, subject, relevantData, priorityCounts })}
+
                     <div>
                         <h3>5. Quick Progress Check</h3>
                         <ul><li>Use a 3–5 item or short-performance check after reteaching.</li><li>Check Beginning learners first, then Developing and Approaching learners.</li><li>Suggested success indicator: the learner shows improvement on the same competency in a fresh set of items and moves toward the next proficiency level.</li></ul>
@@ -4867,25 +4952,42 @@
         }
 
         function getGeminiApiKey() {
-            return GEMINI_API_KEY;
+            try { return (localStorage.getItem(GEMINI_KEY_STORAGE) || '').trim() || GEMINI_API_KEY; } catch (e) { return GEMINI_API_KEY; }
+        }
+        function saveGeminiApiKeyPreference() {}
+
+        function explainGeminiError(e) {
+            const m = String(e?.message || e);
+            if (e?.status === 401 || e?.status === 403 || /api key|credential|authentication|permission/i.test(m)) return 'Gemini rejected the saved key. Create a free key at aistudio.google.com/apikey (it starts with AIza) and paste it in AI settings.';
+            if (e?.status === 429 || /quota|rate limit|exhausted/i.test(m)) return 'Gemini free-tier limit reached. Try again in a minute or use the free engine.';
+            if (e?.name === 'AbortError') return 'Gemini timed out.';
+            return m;
         }
 
-        function saveGeminiApiKeyPreference() {
-            // No-op in single-file mode. The configured key is already embedded above.
-        }
-
+        window.saveGeminiKey = async () => {
+            const input = document.getElementById('gemini-key-input'), status = document.getElementById('gemini-server-status');
+            const key = String(input?.value || '').trim();
+            if (!key) return showToast('Paste a Gemini API key first.', 'error');
+            if (/^AQ\./.test(key)) { if (status) status.textContent = 'This looks like a Google Cloud / Vertex key, which the Gemini API rejects. Use a key from aistudio.google.com/apikey (starts with AIza).'; return; }
+            try { localStorage.setItem(GEMINI_KEY_STORAGE, key); } catch (e) {}
+            if (status) status.textContent = 'Testing key...';
+            try { await requestGeminiIntervention('Reply with the single word OK.'); input.value = ''; if (status) status.textContent = 'Key works. Gemini is ready on this device.'; showToast('Gemini key saved and working.'); }
+            catch (e) { try { localStorage.removeItem(GEMINI_KEY_STORAGE); } catch (_) {} if (status) status.textContent = explainGeminiError(e); showToast('That key did not work.', 'error'); }
+            handleAIProviderChange();
+        };
+        window.clearGeminiKey = () => { try { localStorage.removeItem(GEMINI_KEY_STORAGE); } catch (e) {} const st = document.getElementById('gemini-key-input'); if (st) st.value = ''; showToast('Gemini key removed from this device.'); handleAIProviderChange(); };
         window.toggleGeminiKeyVisibility = () => {};
 
         function hasGeminiConfiguration() {
-            return Boolean(GEMINI_API_KEY && GEMINI_API_KEY.length > 20);
+            return getGeminiApiKey().length > 20;
         }
 
         async function refreshGeminiServerStatus() {
             const statusBox = document.getElementById('gemini-server-status');
             if (!statusBox) return hasGeminiConfiguration();
             statusBox.textContent = hasGeminiConfiguration()
-                ? `Gemini ${GEMINI_MODEL} is ready in this single HTML file. Teacher key entry is not required.`
-                : `Gemini ${GEMINI_MODEL} is not configured. Free Intervention Engine remains available.`;
+                ? `${GEMINI_LABEL} key saved on this device.`
+                : 'No key saved yet. The free cloud AI and free engine still work.';
             return hasGeminiConfiguration();
         }
 
@@ -4901,18 +5003,20 @@
                     status.textContent = 'Using the built-in free intervention engine';
                 } else if (provider === 'gemini') {
                     status.textContent = hasGeminiConfiguration()
-                        ? `Gemini ${GEMINI_MODEL} — Free Tier ready`
-                        : `Gemini ${GEMINI_MODEL} is not configured`;
+                        ? `${GEMINI_LABEL} — Free Tier ready`
+                        : `${GEMINI_LABEL} is not configured`;
                 } else if (provider === 'gemini-search') {
-                    status.textContent = `Gemini ${GEMINI_MODEL} + optional live Google Search grounding`;
+                    status.textContent = `${GEMINI_LABEL} + optional live Google Search grounding`;
+                } else if (provider === 'cloud') {
+                    status.textContent = 'Free cloud AI (no key) with anonymized learner IDs';
                 } else if (provider === 'openai') {
                     status.textContent = OPENAI_PROXY_URL
                         ? `ChatGPT ${OPENAI_MODEL} proxy is ready`
                         : 'ChatGPT selected — secure proxy is not configured';
                 } else {
                     status.textContent = hasGeminiConfiguration()
-                        ? `Automatic mode: Gemini ${GEMINI_MODEL} → ChatGPT → Free Engine`
-                        : 'Automatic mode: ChatGPT → Free Engine';
+                        ? `Automatic mode: ${GEMINI_LABEL} → Free cloud AI → Free Engine`
+                        : 'Automatic mode: Free cloud AI → Free Engine';
                 }
             }
             refreshGeminiServerStatus();
@@ -5040,73 +5144,83 @@
             return citations;
         }
 
+        async function geminiFetch(model, apiKey, prompt, useSearch) {
+            const headers = { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey };
+            const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 30000);
+            try {
+                const res = useSearch
+                    ? await fetch(GEMINI_INTERACTIONS_URL, { method: 'POST', headers, signal: ctl.signal, body: JSON.stringify({ model, input: prompt, tools: [{ type: 'google_search' }] }) })
+                    : await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, { method: 'POST', headers, signal: ctl.signal, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 5000 } }) });
+                const raw = await res.text(); let data = {};
+                try { data = JSON.parse(raw); } catch (_) {}
+                if (!res.ok) { const err = new Error(data?.error?.message || `Gemini returned HTTP ${res.status}`); err.status = res.status; throw err; }
+                return data;
+            } finally { clearTimeout(timer); }
+        }
+
         async function requestGeminiIntervention(prompt, { useGoogleSearch = false } = {}) {
             const apiKey = getGeminiApiKey();
-            if (!apiKey) throw new Error(`Gemini ${GEMINI_MODEL} is not configured.`);
-
-            let response;
-            let data = {};
-
-            if (useGoogleSearch) {
-                response = await fetch(GEMINI_INTERACTIONS_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': apiKey
-                    },
-                    body: JSON.stringify({
-                        model: GEMINI_MODEL,
-                        input: prompt,
-                        tools: [{ type: 'google_search' }]
-                    })
-                });
-            } else {
-                response = await fetch(`${GEMINI_GENERATE_URL}?key=${encodeURIComponent(apiKey)}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.2,
-                            maxOutputTokens: 5000,
-                            responseMimeType: 'text/plain'
-                        }
-                    })
-                });
+            if (!apiKey) throw new Error('No Gemini key saved. Add one in AI settings or use the free options.');
+            let data = null, lastErr = null;
+            for (const model of [GEMINI_MODEL, ...GEMINI_FALLBACK_MODELS]) {
+                try { data = await geminiFetch(model, apiKey, prompt, useGoogleSearch); break; }
+                catch (e) { lastErr = e; if (e.status !== 404 && !/not found|not supported/i.test(e.message)) throw new Error(explainGeminiError(e)); }
             }
-
-            const raw = await response.text();
-            try { data = JSON.parse(raw); } catch (_) {
-                throw new Error(raw || `Gemini returned HTTP ${response.status}`);
-            }
-            if (!response.ok) {
-                throw new Error(data?.error?.message || raw || `Gemini returned HTTP ${response.status}`);
-            }
-
-            let html = '';
-            let citations = [];
-            if (useGoogleSearch) {
-                html = extractGeminiInteractionText(data);
-                citations = extractGeminiCitations(data);
-            } else {
-                html = data?.candidates?.[0]?.content?.parts?.map(p => p?.text || '').join('') || data?.output_text || '';
-            }
-
+            if (!data) throw new Error(explainGeminiError(lastErr));
+            const html = useGoogleSearch ? extractGeminiInteractionText(data) : (data?.candidates?.[0]?.content?.parts?.map(p => p?.text || '').join('') || data?.output_text || '');
             if (!html) throw new Error('Gemini returned an empty intervention plan.');
-            let safe = sanitizeRemoteAIHTML(html);
-
-            if (citations.length) {
-                const citationHtml = `
-                    <div class="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-4">
-                        <h4 class="text-base font-extrabold text-sky-900 mb-2">Live curriculum/reference sources</h4>
-                        <ul class="space-y-2 text-sm leading-relaxed">
-                            ${citations.slice(0, 8).map(c => `<li><a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.title)}</a></li>`).join('')}
-                        </ul>
-                        <p class="mt-2 text-xs text-sky-700">These sources were returned by Gemini's Google Search grounding. Search grounding may be billed separately from free text generation.</p>
-                    </div>`;
-                safe += citationHtml;
-            }
+            let safe = sanitizeRemoteAIHTML(aiMarkdownToHtml(html));
+            const citations = useGoogleSearch ? extractGeminiCitations(data) : [];
+            if (citations.length) safe += `<div class="mt-6 rounded-2xl border border-sky-200 bg-sky-50 p-4"><h4 class="text-base font-extrabold text-sky-900 mb-2">Reference sources</h4><ul class="space-y-2 text-sm">${citations.slice(0, 8).map(c => `<li><a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.title)}</a></li>`).join('')}</ul></div>`;
             return safe;
+        }
+
+        // Models sometimes answer in markdown; convert it so the plan always renders cleanly.
+        function aiMarkdownToHtml(text) {
+            let t = String(text).replace(/^```(?:html)?\s*|```\s*$/gm, '').trim();
+            if (/<(h3|p|ul|ol)\b/i.test(t)) return t;
+            const bold = x => x.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            let out = '', list = '';
+            const close = () => { if (list) { out += `</${list}>`; list = ''; } };
+            t.split('\n').forEach(line => {
+                const l = line.trim(); let m;
+                if (!l) return close();
+                if ((m = l.match(/^#{1,4}\s+(.*)/))) { close(); out += `<h3>${bold(m[1])}</h3>`; }
+                else if ((m = l.match(/^[-*]\s+(.*)/))) { if (list !== 'ul') { close(); out += '<ul>'; list = 'ul'; } out += `<li>${bold(m[1])}</li>`; }
+                else if ((m = l.match(/^\d+[.)]\s+(.*)/))) { if (list !== 'ol') { close(); out += '<ol>'; list = 'ol'; } out += `<li>${bold(m[1])}</li>`; }
+                else { close(); out += `<p>${bold(l)}</p>`; }
+            });
+            close(); return out;
+        }
+
+        // Keyless fallback provider. Receives only the anonymized prompt.
+        async function requestFreeCloudIntervention(prompt) {
+            const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 22000);
+            try {
+                const res = await fetch('https://text.pollinations.ai/openai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
+                    body: JSON.stringify({ model: 'openai', temperature: 0.3, messages: [
+                        { role: 'system', content: 'You are a Philippine K-12 instructional intervention assistant. Reply with clean HTML only (h3, p, ul, ol, li, strong).' },
+                        { role: 'user', content: prompt }] }) });
+                if (!res.ok) throw new Error(`Free cloud AI returned HTTP ${res.status}`);
+                const data = await res.json();
+                const text = data?.choices?.[0]?.message?.content || '';
+                if (text.trim().length < 200) throw new Error('Free cloud AI returned an incomplete plan.');
+                return sanitizeRemoteAIHTML(aiMarkdownToHtml(text));
+            } catch (e) { throw new Error(e.name === 'AbortError' ? 'Free cloud AI timed out.' : e.message); }
+            finally { clearTimeout(timer); }
+        }
+
+        // Privacy: online AI only ever sees Learner-### IDs; real names are restored locally in the result.
+        function aiPseudonym(r) {
+            const map = (window.__aiAlias ||= new Map());
+            const key = [r.lastName, r.firstName, r.middleName, r.grade, r.section].map(v => String(v || '').trim().toLowerCase()).join('|');
+            if (!map.has(key)) map.set(key, { id: 'Learner-' + String(map.size + 1).padStart(3, '0'), name: safeAIStudentName(r) });
+            return map.get(key).id;
+        }
+        function restoreAIAliases(html) {
+            const map = window.__aiAlias; if (!map || !map.size) return html;
+            const names = new Map(Array.from(map.values()).map(v => [v.id, v.name]));
+            return String(html).replace(/Learner-\d{3}/g, id => names.has(id) ? escapeHtml(names.get(id)) : id);
         }
 
         async function requestOpenAIIntervention(prompt) {
@@ -5175,7 +5289,7 @@
             });
             const evidence = rankedRecords.slice(0, 250).map(r => {
                 const p = getProficiencyInfo(r.score);
-                return `Student: ${safeAIStudentName(r)} | Grade: ${r.grade || 'N/A'} | Section: ${r.section || 'N/A'} | Subject: ${r.subject || 'N/A'} | Competency: ${r.competency || 'N/A'} | Test: ${r.testType || 'N/A'} | Score: ${Number(r.score || 0).toFixed(1)}% | GRACE Priority Band: ${p.label}`;
+                return `Student: ${aiPseudonym(r)} | Grade: ${r.grade || 'N/A'} | Section: ${r.section || 'N/A'} | Subject: ${r.subject || 'N/A'} | Competency: ${r.competency || 'N/A'} | Test: ${r.testType || 'N/A'} | Score: ${Number(r.score || 0).toFixed(1)}% | GRACE Priority Band: ${p.label}`;
             }).join('\n');
             const weakestCompetencies = competencySummary.map((c, i) => `${i + 1}. ${c.competency} — avg ${c.average.toFixed(1)}%, lowest ${c.lowest.toFixed(1)}%, priority ${c.priority}, n=${c.count}`).join('\n');
             const lensDescription = {
@@ -5193,6 +5307,11 @@
 SUBJECT CONTEXT: ${subject || 'All Subjects'}
 COMPETENCY CONTEXT: ${competency || 'All Competencies'}
 Use the selected competency as the primary intervention focus when one is selected. Do not compare different subjects because competencies differ by subject.
+
+PRIVACY: Learners are anonymized as Learner-###. Refer to them only by those exact IDs.
+
+PHILIPPINE SCHOOL CONTEXT:
+${phPromptHints(subject)}
 
 PHILIPPINE CURRICULUM BASIS (CURRENT CONTEXT):
 ${curriculumGuidance}
@@ -5289,6 +5408,7 @@ Additional formatting requirements for Gemini:
             scrollToAIResults({ focus: true });
 
             const promptArgs = { target, type, subject, competency, relevantData, priorityCounts, competencySummary, lens };
+            window.__aiAlias = new Map();
             const openAIPrompt = buildOpenAIPrompt(promptArgs);
             const geminiPrompt = buildGeminiPrompt(promptArgs);
 
@@ -5302,54 +5422,31 @@ Additional formatting requirements for Gemini:
                     if (status) status.textContent = `Connecting to OpenAI ${OPENAI_MODEL}...`;
                     return await requestOpenAIIntervention(openAIPrompt);
                 };
-
-                const tryGemini = async (useGoogleSearch = false) => {
-                    if (!hasGeminiConfiguration()) throw new Error(`Gemini ${GEMINI_MODEL} is not configured.`);
-                    if (status) status.textContent = useGoogleSearch
-                        ? `Connecting to Gemini ${GEMINI_MODEL} with live Google Search...`
-                        : `Connecting to Gemini ${GEMINI_MODEL} Free Tier...`;
-                    return await requestGeminiIntervention(geminiPrompt, { useGoogleSearch });
+                const tryGemini = async (useSearch = false) => {
+                    if (!hasGeminiConfiguration()) throw new Error('No Gemini key saved yet (add one in AI settings).');
+                    if (status) status.textContent = useSearch ? `Connecting to ${GEMINI_LABEL} with Google Search...` : `Connecting to ${GEMINI_LABEL}...`;
+                    return await requestGeminiIntervention(geminiPrompt, { useGoogleSearch: useSearch });
                 };
-
-                if (provider === 'openai') {
-                    try {
-                        cleanHtml = await tryOpenAI();
-                        providerUsed = `ChatGPT ${OPENAI_MODEL}`;
-                    } catch (err) {
-                        notices.push(`ChatGPT: ${err.message}`);
-                    }
-                } else if (provider === 'gemini') {
-                    try {
-                        cleanHtml = await tryGemini(false);
-                        providerUsed = `Gemini ${GEMINI_MODEL} — Free Tier`;
-                    } catch (err) {
-                        notices.push(`Gemini: ${err.message}`);
-                    }
-                } else if (provider === 'gemini-search') {
-                    try {
-                        cleanHtml = await tryGemini(true);
-                        providerUsed = `Gemini ${GEMINI_MODEL} + Google Search`;
-                    } catch (err) {
-                        notices.push(`Gemini Search: ${err.message}`);
-                    }
-                } else if (provider === 'local') {
-                    if (status) status.textContent = 'Using the built-in free intervention engine';
-                } else {
-                    try {
-                        cleanHtml = await tryGemini(false);
-                        providerUsed = `Gemini ${GEMINI_MODEL} — Free Tier`;
-                    } catch (err) {
-                        notices.push(`Gemini: ${err.message}`);
-                    }
-                    if (!cleanHtml && OPENAI_PROXY_URL) {
-                        try {
-                            cleanHtml = await tryOpenAI();
-                            providerUsed = `ChatGPT ${OPENAI_MODEL}`;
-                        } catch (err) {
-                            notices.push(`ChatGPT: ${err.message}`);
-                        }
-                    }
+                const tryCloud = async () => {
+                    if (status) status.textContent = 'Connecting to the free cloud AI...';
+                    return await requestFreeCloudIntervention(openAIPrompt);
+                };
+                const attempt = async (label, fn, used, silent = false) => {
+                    if (cleanHtml) return;
+                    try { cleanHtml = await fn(); providerUsed = used; }
+                    catch (err) { if (!silent) notices.push(`${label}: ${err.message}`); }
+                };
+                if (provider === 'openai') await attempt('ChatGPT', tryOpenAI, `ChatGPT ${OPENAI_MODEL}`);
+                else if (provider === 'gemini') await attempt('Gemini', () => tryGemini(false), `${GEMINI_LABEL} — Free Tier`);
+                else if (provider === 'gemini-search') await attempt('Gemini Search', () => tryGemini(true), `${GEMINI_LABEL} + Google Search`);
+                else if (provider === 'cloud') await attempt('Free cloud AI', tryCloud, 'Free Cloud AI');
+                else if (provider === 'local') { if (status) status.textContent = 'Using the built-in free intervention engine'; }
+                else {
+                    await attempt('Gemini', () => tryGemini(false), `${GEMINI_LABEL} — Free Tier`, !hasGeminiConfiguration());
+                    if (OPENAI_PROXY_URL) await attempt('ChatGPT', tryOpenAI, `ChatGPT ${OPENAI_MODEL}`);
+                    await attempt('Free cloud AI', tryCloud, 'Free Cloud AI');
                 }
+                if (cleanHtml) cleanHtml = restoreAIAliases(cleanHtml);
 
                 if (!cleanHtml) {
                     if (status) status.textContent = 'Using the built-in free intervention engine';
@@ -5623,6 +5720,8 @@ Additional formatting requirements for Gemini:
             clearTimeout(window.__graceSearchStateTimer);
             window.__graceSearchStateTimer = setTimeout(captureUIState, 120);
         });
+
+        document.getElementById('student-search')?.addEventListener('keydown', e => { if (e.key === 'Escape') clearStudentSearch(); });
 
         const inputSchoolYear = document.getElementById('input-school-year');
         if (inputSchoolYear) inputSchoolYear.value = DEFAULT_SCHOOL_YEAR;
