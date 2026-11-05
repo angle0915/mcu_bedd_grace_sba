@@ -1351,7 +1351,7 @@
                                 <span class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-user-plus"></i></span>
                                 Add Teacher & Assign Class Access
                             </h2>
-                            <p class="text-xs text-slate-500 mt-1">Choose multiple grade levels and sections using the checklists below. Access applies to any selected grade/section combination.</p>
+                            <p class="text-xs text-slate-500 mt-1">Pick the school year first, then the grade levels, then the sections (listed from the selected school year). Access applies to any selected school year, grade, section and subject combination.</p>
                         </div>
                         <span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-bold"><i class="fa-solid fa-shield-halved"></i> Admin Only</span>
                     </div>
@@ -1371,23 +1371,27 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2"><div class="flex items-start gap-2.5"><span class="mt-0.5 w-5 h-5 shrink-0 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold flex items-center justify-center">1</span><div><p class="text-xs font-bold text-slate-800">School Year</p><p class="text-[10px] text-slate-400 mt-0.5">Choose first. Sections load from it.</p></div></div><span id="new-year-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full whitespace-nowrap">0 selected</span></div>
+<div class="flex gap-2 p-3 border-b border-slate-200/70"><input type="text" id="new-user-year-add" placeholder="Add school year, e.g. SY 2027–2028" class="min-w-0 flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40"><button type="button" onclick="addAccessSchoolYear('new')" class="px-3 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Add</button></div>
+<div id="new-user-year-checklist" class="access-checklist max-h-64 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-2"></div></div>
                             <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
                                 <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                                    <div><p class="text-xs font-bold text-slate-800">Grade Levels</p><p class="text-[10px] text-slate-400 mt-0.5">Select all grades the teacher can manage.</p></div>
+                                    <div><p class="text-xs font-bold text-slate-800">2 · Grade Levels</p><p class="text-[10px] text-slate-400 mt-0.5">Select all grades the teacher can manage.</p></div>
                                     <span id="new-grade-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span>
                                 </div>
                                 <div id="new-user-grade-checklist" class="access-checklist max-h-64 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
                             </div>
                             <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
                                 <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                                    <div><p class="text-xs font-bold text-slate-800">Sections</p><p class="text-[10px] text-slate-400 mt-0.5">Select all sections the teacher can manage.</p></div>
+                                    <div><p class="text-xs font-bold text-slate-800">3 · Sections</p><p class="text-[10px] text-slate-400 mt-0.5">Based on the selected school year.</p></div>
                                     <span id="new-section-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span>
                                 </div>
                                 <div id="new-user-section-checklist" class="access-checklist max-h-64 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
                             </div>
 <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
-<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">Subjects</p><p class="text-[10px] text-slate-400 mt-0.5">Subjects the teacher can view and manage.</p></div><span id="new-subject-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div>
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">4 · Subjects</p><p class="text-[10px] text-slate-400 mt-0.5">Subjects the teacher can view and manage.</p></div><span id="new-subject-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div>
 <div class="flex gap-2 p-3 border-b border-slate-200/70"><input type="text" id="new-user-subject-add" placeholder="Add subject, e.g. Mathematics" class="min-w-0 flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40"><button type="button" onclick="addAccessSubject('new')" class="px-3 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Add</button></div>
 <div id="new-user-subject-checklist" class="access-checklist max-h-52 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-2"></div></div>
                         </div>
@@ -1397,7 +1401,7 @@
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[420px]">
                     <div class="px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-2 bg-slate-50/50">
-                        <div><h2 class="text-base font-bold text-slate-900">System Users & Access Permissions</h2><p class="text-[11px] text-slate-400 mt-0.5">Admins can modify an existing teacher's grade and section access at any time.</p></div>
+                        <div><h2 class="text-base font-bold text-slate-900">System Users & Access Permissions</h2><p class="text-[11px] text-slate-400 mt-0.5">Admins can modify an existing teacher's school year, grade and section access at any time.</p></div>
                     </div>
                     <div class="overflow-auto flex-1">
                         <table class="w-full text-left border-collapse min-w-[820px]">
@@ -1420,18 +1424,22 @@
 
     <!-- Teacher Access Edit Modal -->
     <div id="edit-teacher-access-modal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl p-6 border border-slate-100 max-h-[92vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl p-6 border border-slate-100 max-h-[92vh] overflow-y-auto">
             <div class="flex items-start justify-between gap-4 mb-5">
-                <div><h3 class="text-base font-bold text-slate-900 flex items-center gap-2"><span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-user-gear"></i></span>Modify Teacher Access</h3><p class="text-xs text-slate-500 mt-1">Change the grade levels, sections and subjects this teacher is allowed to access.</p></div>
+                <div><h3 class="text-base font-bold text-slate-900 flex items-center gap-2"><span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fa-solid fa-user-gear"></i></span>Modify Teacher Access</h3><p class="text-xs text-slate-500 mt-1">Change the school years, grade levels, sections and subjects this teacher is allowed to access.</p></div>
                 <button onclick="closeTeacherAccessModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="hidden" id="edit-teacher-access-id">
             <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 mb-5"><p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Teacher Account</p><p id="edit-teacher-access-email" class="text-sm font-bold text-slate-800 mt-1">—</p></div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden"><div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">Grade Levels</p><p class="text-[10px] text-slate-400">Select all allowed grades.</p></div><span id="edit-grade-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div><div id="edit-teacher-grade-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div></div>
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden"><div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">Sections</p><p class="text-[10px] text-slate-400">Select all allowed sections.</p></div><span id="edit-section-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div><div id="edit-teacher-section-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2"><div class="flex items-start gap-2.5"><span class="mt-0.5 w-5 h-5 shrink-0 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold flex items-center justify-center">1</span><div><p class="text-xs font-bold text-slate-800">School Year</p><p class="text-[10px] text-slate-400 mt-0.5">Teachers without a saved list had every year, so all are pre-checked.</p></div></div><span id="edit-year-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full whitespace-nowrap">0 selected</span></div>
+<div class="flex gap-2 p-3 border-b border-slate-200/70"><input type="text" id="edit-teacher-year-add" placeholder="Add school year, e.g. SY 2027–2028" class="min-w-0 flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40"><button type="button" onclick="addAccessSchoolYear('edit')" class="px-3 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Add</button></div>
+<div id="edit-teacher-year-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-2"></div></div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden"><div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">2 · Grade Levels</p><p class="text-[10px] text-slate-400">Select all allowed grades.</p></div><span id="edit-grade-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div><div id="edit-teacher-grade-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div></div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden"><div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">3 · Sections</p><p class="text-[10px] text-slate-400">Based on the selected school year.</p></div><span id="edit-section-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div><div id="edit-teacher-section-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-2 sm:grid-cols-3 gap-2"></div></div>
 <div class="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden">
-<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">Subjects</p><p class="text-[10px] text-slate-400 mt-0.5">Teachers without a saved list had all subjects, so all are pre-checked.</p></div><span id="edit-subject-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div>
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between"><div><p class="text-xs font-bold text-slate-800">4 · Subjects</p><p class="text-[10px] text-slate-400 mt-0.5">Teachers without a saved list had all subjects, so all are pre-checked.</p></div><span id="edit-subject-count" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-1 rounded-full">0 selected</span></div>
 <div class="flex gap-2 p-3 border-b border-slate-200/70"><input type="text" id="edit-teacher-subject-add" placeholder="Add subject, e.g. Mathematics" class="min-w-0 flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/40"><button type="button" onclick="addAccessSubject('edit')" class="px-3 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Add</button></div>
 <div id="edit-teacher-subject-checklist" class="access-checklist max-h-72 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-2"></div></div>
             </div>
@@ -1788,7 +1796,8 @@
             const grades = getProfileGrades(profile).join('|');
             const sections = getProfileSections(profile).join('|');
             const subjects = getProfileSubjects(profile).join('|');
-            return [appId, String(profile.email).trim().toLowerCase(), profile.role || 'teacher', grades, sections, subjects].map(encodeURIComponent).join('::');
+            const years = getProfileSchoolYears(profile).join('|');
+            return [appId, String(profile.email).trim().toLowerCase(), profile.role || 'teacher', grades, sections, subjects, years].map(encodeURIComponent).join('::');
         }
 
         function setBootMessage(message) {
@@ -1986,7 +1995,10 @@
 
         function restoreUIStateAfterDataReady() {
             const state = readUIState();
-            if (!state) return;
+            // FIX: a user's very first login has no saved UI state. Previously this returned without
+            // rendering, yet the "restore" was already marked as done, so the dashboard stayed at 0
+            // until a page refresh. Always render the live data when there is nothing to restore.
+            if (!state) { renderAssessmentViewsNow(); return; }
             if (state.schoolYear) universalSchoolYear = state.schoolYear;
             syncSchoolYearFilters();
             setSelectIfAvailable('dashboard-subject-filter', state.dashboardSubject || '');
@@ -2045,14 +2057,16 @@
             return true;
         }
 
+        function renderAssessmentViewsNow() {
+            const tab = activeTabId();
+            filterAndRenderData({ immediate: true });
+            if (tab === 'insights-tab') populateAISelects(); else viewDirty.ai = true;
+            if (tab === 'dashboard-tab' || !tab) { updateDashFilterValues(); updateDashboardSummary(); updateComparisonControls(); } else viewDirty.dash = true;
+        }
+
         function refreshAssessmentViews() {
             [refreshAccessibleData, populateSchoolYearFilters, populateGlobalSubjectFilters].forEach(fn => { try { fn(); } catch (e) { console.error(e); } });
-            const renderAll = () => {
-                const tab = activeTabId();
-                filterAndRenderData({ immediate: true });
-                if (tab === 'insights-tab') populateAISelects(); else viewDirty.ai = true;
-                if (tab === 'dashboard-tab' || !tab) { updateDashFilterValues(); updateDashboardSummary(); updateComparisonControls(); } else viewDirty.dash = true;
-            };
+            const renderAll = renderAssessmentViewsNow;
             try {
                 // Only restore saved filters once real records exist; an empty first cache snapshot must not consume the restore.
                 if (!uiStateRestored && hasUsableData()) { uiStateRestored = true; restoreUIStateAfterDataReady(); }
@@ -2482,7 +2496,7 @@
                         return;
                     }
                     const changes = snapshot.docChanges();
-                    const metadataOnly = assessmentMapReady && changes.length === 0;
+                    let metadataOnly = assessmentMapReady && changes.length === 0;
                     if (!metadataOnly) {
                         if (!assessmentMapReady) assessmentById = new Map();
                         changes.forEach(ch => {
@@ -2492,13 +2506,26 @@
                         assessmentMapReady = true;
                         allAssessmentsData = Array.from(assessmentById.values());
                     }
+                    // Integrity check: a confirmed server snapshot is the source of truth. If our local map
+                    // drifted from it (e.g. after an empty first cache snapshot), rebuild straight from it.
+                    if (!fromCache && assessmentById.size !== snapshot.size) {
+                        assessmentById = new Map();
+                        snapshot.docs.forEach(d => assessmentById.set(d.id, sanitizeAssessmentRecord({ id: d.id, ...d.data() })));
+                        assessmentMapReady = true;
+                        allAssessmentsData = Array.from(assessmentById.values());
+                        metadataOnly = false;
+                    }
+                    const firstServerSync = !fromCache && !assessmentServerSyncReceived;
                     if (!fromCache) {
                         assessmentServerSyncReceived = true;
                         lastDataSnapshotAt = Date.now();
                         dataRetryCount = 0;
                         clearTimeout(dataRetryTimer); clearTimeout(dataWatchdog);
                     }
-                    if (!metadataOnly) queueViewRefresh();
+                    // The first confirmed server snapshot always repaints immediately (no debounce), so a
+                    // brand-new session shows its data right after the loading screen without a refresh.
+                    if (firstServerSync) { clearTimeout(viewRefreshTimer); refreshAssessmentViews(); }
+                    else if (!metadataOnly) queueViewRefresh();
                     if (snapshot.size > 0 || !fromCache) hideDataLoading();
                     if (fromCache) setDataSyncStatus(snapshot.size ? 'Local sync' : 'Waiting for Firebase…', 'cached');
                     else { if (!metadataOnly) scheduleAssessmentCacheWrite(); setDataSyncStatus('Synced', 'synced'); }
@@ -3043,7 +3070,7 @@
             if (data) data.value = value;
 
             const addInput = document.getElementById('input-school-year');
-            if (addInput) addInput.value = value || DEFAULT_SCHOOL_YEAR;
+            if (addInput) addInput.value = value || getDefaultSchoolYearForEntry();
 
             const datalist = document.getElementById('school-year-options');
             if (datalist) {
@@ -3069,7 +3096,12 @@
         }
 
         function getDefaultSchoolYearForEntry() {
-            return getSelectedSchoolYear() || DEFAULT_SCHOOL_YEAR;
+            const selected = getSelectedSchoolYear();
+            if (selected) return selected;
+            // Teachers restricted to specific school years default to one they are actually allowed to use.
+            const assigned = userProfile && userProfile.role !== 'admin' ? getProfileSchoolYears(userProfile) : [];
+            if (assigned.length && !assigned.some(y => schoolYearKey(y) === schoolYearKey(DEFAULT_SCHOOL_YEAR))) return assigned[assigned.length - 1];
+            return DEFAULT_SCHOOL_YEAR;
         }
 
         function getSelectedDashboardSubject() {
@@ -3863,6 +3895,7 @@
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'assessments'), newEntry);
                 e.target.reset();
+                try { syncSchoolYearFilters(); } catch (e2) {}
                 showToast("Record successfully added.");
                 scheduleAssessmentCacheWrite();
             } catch (err) {
@@ -5517,6 +5550,22 @@ Additional formatting requirements for Gemini:
         }
 
         function getProfileSubjects(profile) { return uniqueSorted(normalizeAccessArray(profile?.assignedSubjects)); }
+
+        // School-year access. Profiles saved before this feature have no list and keep access to every school year.
+        function schoolYearKey(v) {
+            return String(v ?? '').trim().toLowerCase().replace(/[\u2010-\u2015\u2212]/g, '-').replace(/\s+/g, ' ');
+        }
+        function getProfileSchoolYears(profile) { return uniqueSorted(normalizeAccessArray(profile?.assignedSchoolYears)); }
+        function getAccessSchoolYearOptions(extra = []) {
+            const custom = Array.from(window.__graceCustomSchoolYears || []);
+            return uniqueSorted([...(allAssessmentsData || []).map(r => getRecordSchoolYear(r)), DEFAULT_SCHOOL_YEAR, ...custom, ...extra]);
+        }
+        // Sections load from the records of the selected school year(s) only.
+        function getAccessSectionOptionsForYears(years) {
+            const keys = new Set((years || []).map(schoolYearKey));
+            if (!keys.size) return [];
+            return uniqueSorted((allAssessmentsData || []).filter(r => keys.has(schoolYearKey(getRecordSchoolYear(r)))).map(r => r.section));
+        }
         function getAccessSubjectOptions() {
             const custom = Array.from(window.__graceCustomSubjects || []);
             return uniqueSorted([...(allAssessmentsData || []).map(r => r.subject), ...custom]);
@@ -5538,6 +5587,8 @@ Additional formatting requirements for Gemini:
             const grade = String(record?.grade ?? '').trim().toLowerCase();
             const section = String(record?.section ?? '').trim().toLowerCase();
             if (!grades.includes(grade) || !sections.includes(section)) return false;
+            const years = getProfileSchoolYears(profile).map(schoolYearKey);
+            if (years.length && !years.includes(schoolYearKey(getRecordSchoolYear(record)))) return false;
             const subjects = getProfileSubjects(profile);
             return !subjects.length || subjects.some(sb => sb.toLowerCase() === String(record?.subject ?? '').trim().toLowerCase());
         }
@@ -5548,19 +5599,21 @@ Additional formatting requirements for Gemini:
             if (!grades.length || !sections.length) return 'Teacher - No class access';
             const gradeText = grades.length <= 3 ? grades.join(', ') : `${grades.slice(0, 3).join(', ')} +${grades.length - 3}`;
             const sectionText = sections.length <= 3 ? sections.join(', ') : `${sections.slice(0, 3).join(', ')} +${sections.length - 3}`;
-            return `Teacher - Gr ${gradeText} · Sec ${sectionText}`;
+            const years = getProfileSchoolYears(profile);
+            const yearText = years.length ? (years.length <= 2 ? years.join(', ') : `${years.slice(0, 2).join(', ')} +${years.length - 2}`) : '';
+            return `Teacher - ${yearText ? yearText + ' · ' : ''}Gr ${gradeText} · Sec ${sectionText}`;
         }
 
         function getAccessGradeOptions() { return uniqueSorted([...STANDARD_GRADE_OPTIONS, ...(allAssessmentsData || []).map(r => r.grade)]); }
         function getAccessSectionOptions() { return uniqueSorted((allAssessmentsData || []).map(r => r.section)); }
 
-        function renderAccessChecklist(containerId, options, selectedValues, name, countId) {
+        function renderAccessChecklist(containerId, options, selectedValues, name, countId, emptyMessage, onChange) {
             const container = document.getElementById(containerId);
             if (!container) return;
             const selected = new Set(uniqueSorted(selectedValues).map(v => v.toLowerCase()));
             container.innerHTML = '';
             if (!options.length) {
-                container.innerHTML = '<div class="col-span-full rounded-xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">No options are available from the current assessment data.</div>';
+                container.innerHTML = `<div class="col-span-full rounded-xl border border-dashed border-slate-200 bg-white px-3 py-6 text-center text-xs text-slate-400">${escapeHtml(emptyMessage || 'No options are available from the current assessment data.')}</div>`;
                 const count = document.getElementById(countId); if (count) count.textContent = '0 selected';
                 return;
             }
@@ -5573,7 +5626,7 @@ Additional formatting requirements for Gemini:
                 const input = document.createElement('input');
                 input.id = id; input.type = 'checkbox'; input.name = name; input.value = value; input.checked = checked;
                 input.className = 'h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500';
-                input.addEventListener('change', () => { wrapper.classList.toggle('is-checked', input.checked); updateAccessChecklistCounts(); });
+                input.addEventListener('change', () => { wrapper.classList.toggle('is-checked', input.checked); updateAccessChecklistCounts(); if (typeof onChange === 'function') onChange(); });
                 const span = document.createElement('span'); span.className = 'text-xs font-semibold text-slate-700 truncate'; span.textContent = value;
                 wrapper.append(input, span); container.appendChild(wrapper);
             });
@@ -5583,25 +5636,60 @@ Additional formatting requirements for Gemini:
         function getCheckedAccessValues(name) { return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value); }
 
         function updateAccessChecklistCounts() {
+            const newYears = getCheckedAccessValues('new-user-years');
+            const editYears = getCheckedAccessValues('edit-teacher-years');
             const newGrades = getCheckedAccessValues('new-user-grades');
             const newSections = getCheckedAccessValues('new-user-sections');
             const editGrades = getCheckedAccessValues('edit-teacher-grades');
             const editSections = getCheckedAccessValues('edit-teacher-sections');
             const setText = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = `${n} selected`; };
+            setText('new-year-count', newYears.length); setText('edit-year-count', editYears.length);
             setText('new-grade-count', newGrades.length); setText('new-section-count', newSections.length); setText('edit-grade-count', editGrades.length); setText('edit-section-count', editSections.length);
             setText('new-subject-count', getCheckedAccessValues('new-user-subjects').length); setText('edit-subject-count', getCheckedAccessValues('edit-teacher-subjects').length);
-            const summarize = (id, grades, sections, subjects) => {
+            const summarize = (id, years, grades, sections, subjects) => {
                 const el = document.getElementById(id); if (!el) return;
-                if (!grades.length || !sections.length || !subjects.length) { el.textContent = 'Select at least one grade level, one section and one subject.'; return; }
-                el.innerHTML = `<strong>Access:</strong> Grades ${escapeHtml(grades.join(', '))} · Sections ${escapeHtml(sections.join(', '))} · Subjects ${escapeHtml(subjects.join(', '))}. Any selected combination is allowed.`;
+                if (!years.length || !grades.length || !sections.length || !subjects.length) { el.textContent = 'Select at least one school year, one grade level, one section and one subject.'; return; }
+                el.innerHTML = `<strong>Access:</strong> School years ${escapeHtml(years.join(', '))} · Grades ${escapeHtml(grades.join(', '))} · Sections ${escapeHtml(sections.join(', '))} · Subjects ${escapeHtml(subjects.join(', '))}. Any selected combination is allowed.`;
             };
-            summarize('new-user-access-summary', newGrades, newSections, getCheckedAccessValues('new-user-subjects'));
-            summarize('edit-teacher-access-summary', editGrades, editSections, getCheckedAccessValues('edit-teacher-subjects'));
+            summarize('new-user-access-summary', newYears, newGrades, newSections, getCheckedAccessValues('new-user-subjects'));
+            summarize('edit-teacher-access-summary', editYears, editGrades, editSections, getCheckedAccessValues('edit-teacher-subjects'));
         }
 
+        // Cascade: School Year -> Grade Level -> Section. Sections are rebuilt from the selected school year(s).
+        const ACCESS_FORMS = {
+            new:  { year: ['new-user-year-checklist', 'new-user-years', 'new-year-count'], section: ['new-user-section-checklist', 'new-user-sections', 'new-section-count'] },
+            edit: { year: ['edit-teacher-year-checklist', 'edit-teacher-years', 'edit-year-count'], section: ['edit-teacher-section-checklist', 'edit-teacher-sections', 'edit-section-count'] }
+        };
+
+        function refreshAccessSections(kind, keepSections) {
+            const f = ACCESS_FORMS[kind];
+            const years = getCheckedAccessValues(f.year[1]);
+            const keep = Array.isArray(keepSections) ? keepSections : getCheckedAccessValues(f.section[1]);
+            const empty = years.length ? 'No sections were found for the selected school year yet.' : 'Select a school year first. Sections load based on it.';
+            renderAccessChecklist(f.section[0], getAccessSectionOptionsForYears(years), keep, f.section[1], f.section[2], empty);
+        }
+
+        function renderAccessYearChecklist(kind, selectedYears, extraYears = []) {
+            const f = ACCESS_FORMS[kind];
+            const options = getAccessSchoolYearOptions([...selectedYears, ...extraYears]);
+            renderAccessChecklist(f.year[0], options, selectedYears, f.year[1], f.year[2], 'No school years available yet.', () => refreshAccessSections(kind));
+        }
+
+        window.addAccessSchoolYear = (kind) => {
+            const input = document.getElementById(kind === 'new' ? 'new-user-year-add' : 'edit-teacher-year-add');
+            const value = String(input?.value || '').trim();
+            if (!value) return;
+            (window.__graceCustomSchoolYears ||= new Set()).add(value);
+            const f = ACCESS_FORMS[kind];
+            renderAccessYearChecklist(kind, [...getCheckedAccessValues(f.year[1]), value]);
+            refreshAccessSections(kind);
+            input.value = '';
+        };
+
         function refreshTeacherAccessChecklists() {
+            renderAccessYearChecklist('new', getCheckedAccessValues('new-user-years'));
             renderAccessChecklist('new-user-grade-checklist', getAccessGradeOptions(), getCheckedAccessValues('new-user-grades'), 'new-user-grades', 'new-grade-count');
-            renderAccessChecklist('new-user-section-checklist', getAccessSectionOptions(), getCheckedAccessValues('new-user-sections'), 'new-user-sections', 'new-section-count');
+            refreshAccessSections('new');
             renderAccessChecklist('new-user-subject-checklist', getAccessSubjectOptions(), getCheckedAccessValues('new-user-subjects'), 'new-user-subjects', 'new-subject-count');
         }
 
@@ -5610,11 +5698,13 @@ Additional formatting requirements for Gemini:
             if (!userProfile || userProfile.role !== 'admin') return;
             const email = document.getElementById('new-user-email').value.trim().toLowerCase();
             const password = document.getElementById('new-user-password').value.trim();
+            const assignedSchoolYears = uniqueSorted(getCheckedAccessValues('new-user-years'));
             const assignedGrades = uniqueSorted(getCheckedAccessValues('new-user-grades'));
             const assignedSections = uniqueSorted(getCheckedAccessValues('new-user-sections'));
             const assignedSubjects = uniqueSorted(getCheckedAccessValues('new-user-subjects'));
             const btn = document.getElementById('add-teacher-btn');
             if (!email || !password) return showToast('Teacher email and password are required.', 'error');
+            if (!assignedSchoolYears.length) return showToast('Select at least one school year.', 'error');
             if (!assignedGrades.length) return showToast('Select at least one grade level.', 'error');
             if (!assignedSections.length) return showToast('Select at least one section.', 'error');
             if (!assignedSubjects.length) return showToast('Select at least one subject.', 'error');
@@ -5623,8 +5713,8 @@ Additional formatting requirements for Gemini:
                 const profilesCol = collection(db, 'artifacts', appId, 'public', 'data', 'profiles');
                 const snap = await getDocs(query(profilesCol, where('email', '==', email)));
                 if (!snap.empty) { showToast('User with this email already exists.', 'error'); return; }
-                await addDoc(profilesCol, { email, password, role: 'teacher', assignedGrades, assignedSections, assignedSubjects, assignedGrade: assignedGrades[0], assignedSection: assignedSections[0] });
-                showToast(`Teacher added with access to ${assignedGrades.length} grade level(s) and ${assignedSections.length} section(s).`);
+                await addDoc(profilesCol, { email, password, role: 'teacher', assignedSchoolYears, assignedGrades, assignedSections, assignedSubjects, assignedGrade: assignedGrades[0], assignedSection: assignedSections[0] });
+                showToast(`Teacher added with access to ${assignedSchoolYears.length} school year(s), ${assignedGrades.length} grade level(s) and ${assignedSections.length} section(s).`);
                 e.target.reset(); refreshTeacherAccessChecklists(); updateAccessChecklistCounts();
             } catch (err) { console.error(err); showToast('Failed to add teacher.', 'error'); }
             finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus mr-2"></i>Add Teacher'; renderUsersTable(); }
@@ -5651,8 +5741,8 @@ Additional formatting requirements for Gemini:
                 profiles.sort((a,b) => String(a.email||'').localeCompare(String(b.email||'')));
                 profiles.forEach(data => {
                     const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-50 transition-colors';
-                    const grades = getProfileGrades(data), sections = getProfileSections(data), subjects = getProfileSubjects(data);
-                    const classHtml = data.role === 'admin' ? '<span class="inline-flex px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-bold">All Classes</span>' : `<div class="space-y-2"><div><span class="text-[10px] font-bold uppercase text-slate-400">Grades</span><div class="flex flex-wrap gap-1 mt-1">${grades.map(g=>`<span class="px-2 py-1 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold">${escapeHtml(g)}</span>`).join('')}</div></div><div><span class="text-[10px] font-bold uppercase text-slate-400">Sections</span><div class="flex flex-wrap gap-1 mt-1">${sections.map(sec=>`<span class="px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100">${escapeHtml(sec)}</span>`).join('')}</div></div><div><span class="text-[10px] font-bold uppercase text-slate-400">Subjects</span><div class="flex flex-wrap gap-1 mt-1">${subjects.length ? subjects.map(sb => `<span class="px-2 py-1 rounded-md bg-violet-50 text-violet-700 text-[10px] font-bold border border-violet-100">${escapeHtml(sb)}</span>`).join('') : '<span class="text-[10px] font-semibold text-slate-400">All subjects</span>'}</div></div></div>`;
+                    const years = getProfileSchoolYears(data), grades = getProfileGrades(data), sections = getProfileSections(data), subjects = getProfileSubjects(data);
+                    const classHtml = data.role === 'admin' ? '<span class="inline-flex px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-bold">All Classes</span>' : `<div class="space-y-2"><div><span class="text-[10px] font-bold uppercase text-slate-400">School Years</span><div class="flex flex-wrap gap-1 mt-1">${years.length ? years.map(y=>`<span class="px-2 py-1 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">${escapeHtml(y)}</span>`).join('') : '<span class="text-[10px] font-semibold text-slate-400">All school years</span>'}</div></div><div><span class="text-[10px] font-bold uppercase text-slate-400">Grades</span><div class="flex flex-wrap gap-1 mt-1">${grades.map(g=>`<span class="px-2 py-1 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold">${escapeHtml(g)}</span>`).join('')}</div></div><div><span class="text-[10px] font-bold uppercase text-slate-400">Sections</span><div class="flex flex-wrap gap-1 mt-1">${sections.map(sec=>`<span class="px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100">${escapeHtml(sec)}</span>`).join('')}</div></div><div><span class="text-[10px] font-bold uppercase text-slate-400">Subjects</span><div class="flex flex-wrap gap-1 mt-1">${subjects.length ? subjects.map(sb => `<span class="px-2 py-1 rounded-md bg-violet-50 text-violet-700 text-[10px] font-bold border border-violet-100">${escapeHtml(sb)}</span>`).join('') : '<span class="text-[10px] font-semibold text-slate-400">All subjects</span>'}</div></div></div>`;
                     const actions = data.email !== 'admin@grace.edu' ? `<div class="flex items-center justify-end gap-2"><button onclick="openTeacherAccessModal('${data.id}')" class="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-semibold transition-colors border border-indigo-100 hover:border-indigo-600 shadow-sm"><i class="fa-solid fa-user-gear mr-1"></i>Edit Access</button><button onclick="deleteUser('${data.id}')" class="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-lg text-xs font-semibold transition-colors border border-rose-100 hover:border-rose-600 shadow-sm">Revoke</button></div>` : '<span class="text-xs text-slate-400">System Admin</span>';
                     tr.innerHTML = `<td class="px-4 py-4 font-semibold text-slate-800">${escapeHtml(data.email || '')}</td><td class="px-4 py-4"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-md ${data.role === 'admin' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}">${escapeHtml(data.role || 'teacher')}</span></td><td class="px-4 py-4 text-slate-400 font-mono text-xs">••••••••</td><td class="px-4 py-4 align-top">${classHtml}</td><td class="px-4 py-4 text-right align-top">${actions}</td>`;
                     tbody.appendChild(tr);
@@ -5670,8 +5760,13 @@ Additional formatting requirements for Gemini:
                 if (data.role === 'admin') return showToast('The system administrator account cannot be edited here.', 'error');
                 document.getElementById('edit-teacher-access-id').value = id;
                 document.getElementById('edit-teacher-access-email').textContent = data.email || 'Teacher';
+                // Step 1: school year (teachers saved before this feature had every year, so all are pre-checked)
+                const savedYears = getProfileSchoolYears(data);
+                renderAccessYearChecklist('edit', savedYears.length ? savedYears : getAccessSchoolYearOptions());
+                // Step 2: grade level
                 renderAccessChecklist('edit-teacher-grade-checklist', getAccessGradeOptions(), getProfileGrades(data), 'edit-teacher-grades', 'edit-grade-count');
-                renderAccessChecklist('edit-teacher-section-checklist', getAccessSectionOptions(), getProfileSections(data), 'edit-teacher-sections', 'edit-section-count');
+                // Step 3: sections, loaded from the selected school year(s)
+                refreshAccessSections('edit', getProfileSections(data));
                 const savedSubjects = getProfileSubjects(data);
                 renderAccessChecklist('edit-teacher-subject-checklist', getAccessSubjectOptions(), savedSubjects.length ? savedSubjects : getAccessSubjectOptions(), 'edit-teacher-subjects', 'edit-subject-count');
                 updateAccessChecklistCounts();
@@ -5684,16 +5779,18 @@ Additional formatting requirements for Gemini:
         window.saveTeacherAccess = async () => {
             if (!userProfile || userProfile.role !== 'admin') return;
             const id = document.getElementById('edit-teacher-access-id').value;
+            const assignedSchoolYears = uniqueSorted(getCheckedAccessValues('edit-teacher-years'));
             const assignedGrades = uniqueSorted(getCheckedAccessValues('edit-teacher-grades'));
             const assignedSections = uniqueSorted(getCheckedAccessValues('edit-teacher-sections'));
             const assignedSubjects = uniqueSorted(getCheckedAccessValues('edit-teacher-subjects'));
             if (!id) return showToast('No teacher selected.', 'error');
+            if (!assignedSchoolYears.length) return showToast('Select at least one school year.', 'error');
             if (!assignedGrades.length) return showToast('Select at least one grade level.', 'error');
             if (!assignedSections.length) return showToast('Select at least one section.', 'error');
             if (!assignedSubjects.length) return showToast('Select at least one subject.', 'error');
             const btn = document.getElementById('save-teacher-access-btn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...';
             try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'profiles', id), { assignedGrades, assignedSections, assignedSubjects, assignedGrade: assignedGrades[0], assignedSection: assignedSections[0] });
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'profiles', id), { assignedSchoolYears, assignedGrades, assignedSections, assignedSubjects, assignedGrade: assignedGrades[0], assignedSection: assignedSections[0] });
                 closeTeacherAccessModal(); showToast('Teacher access updated successfully.'); renderUsersTable();
             } catch (err) { console.error(err); showToast('Failed to update teacher access.', 'error'); }
             finally { btn.disabled = false; btn.textContent = 'Save Access Changes'; }
